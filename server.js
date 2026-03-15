@@ -104,6 +104,13 @@ function sanitizeWhatsapp(number) {
   return number.replace(/[^\d]/g, "");
 }
 
+function versionedAssetUrl(url, version) {
+  if (!url || url.startsWith("http://") || url.startsWith("https://")) {
+    return url;
+  }
+  return `${url}${url.includes("?") ? "&" : "?"}v=${version}`;
+}
+
 function safeJson(data) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
@@ -239,6 +246,8 @@ function buildConfig() {
       telLink: sanitizeTel(value("PHONE_NUMBER", "+49 30 12345678")),
       email: value("EMAIL", "info@cleanmaster.example"),
       whatsappNumber: sanitizeWhatsapp(value("WHATSAPP_NUMBER", "493012345678")),
+      logoUrl: value("LOGO_URL", "/public/logo-placeholder.svg"),
+      logoAlt: value("LOGO_ALT", "CleanMaster logo"),
       defaultReviewAvatar: value("DEFAULT_REVIEW_AVATAR", "/public/avatar-placeholder.svg"),
       addressStreet: value("ADDRESS_STREET", "Musterstrasse 10"),
       addressCity: value("ADDRESS_CITY", "Berlin"),
@@ -283,6 +292,7 @@ function renderPage(config) {
   const text = config.content[lang];
   const seo = config.seo[lang];
   const assetVersion = encodeURIComponent(config.assetVersion || "1");
+  const logoSrc = versionedAssetUrl(config.company.logoUrl, assetVersion);
   const canonical = `${config.siteUrl.replace(/\/$/, "")}/`;
   const ogImage = config.seo.ogImage ? `${escapeHtml(config.seo.ogImage)}` : "";
   const reviewAverage = averageRating(text.reviews);
@@ -293,6 +303,7 @@ function renderPage(config) {
     url: canonical,
     telephone: config.company.phone,
     email: config.company.email,
+    logo: config.company.logoUrl,
     address: {
       "@type": "PostalAddress",
       streetAddress: config.company.addressStreet,
@@ -391,7 +402,10 @@ function renderPage(config) {
     <div class="page-bg" aria-hidden="true"></div>
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="/" aria-label="${escapeHtml(config.company.name)} home">${escapeHtml(config.company.name)}</a>
+        <a class="brand" href="/" aria-label="${escapeHtml(config.company.name)} home">
+          <img class="brand-logo" src="${escapeHtml(logoSrc)}" alt="${escapeHtml(config.company.logoAlt)}" loading="eager">
+          <span class="brand-text">${escapeHtml(config.company.name)}</span>
+        </a>
         <div class="language-switch" role="group" aria-label="Language switcher">
           <button class="lang-btn ${lang === "en" ? "active" : ""}" data-lang="en" type="button">EN</button>
           <button class="lang-btn ${lang === "de" ? "active" : ""}" data-lang="de" type="button">DE</button>

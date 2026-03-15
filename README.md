@@ -16,6 +16,7 @@ Open `http://localhost:3000`.
 Edit `.env` to change all business/content values:
 
 - Company and contacts: `COMPANY_NAME`, `PHONE_NUMBER`, `EMAIL`, `WHATSAPP_NUMBER`, address fields.
+- Branding: `LOGO_URL`, `LOGO_ALT`.
 - Language: `DEFAULT_LANGUAGE=en|de`.
 - SEO: `SITE_URL`, `SEO_TITLE_*`, `SEO_DESCRIPTION_*`, `SEO_KEYWORDS_*`, `SEO_OG_IMAGE`.
 - Asset cache control: `ASSET_VERSION` (bump to force refresh), `STATIC_ASSET_CACHE_SECONDS` (set `0` while developing).
