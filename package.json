@@ -1,0 +1,20 @@
+{
+  "name": "cleanmaster-landing-page",
+  "version": "1.0.0",
+  "description": "Responsive SEO landing page for CleanMaster with env-driven content.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "landing-page",
+    "cleaning-company",
+    "seo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  }
+}
