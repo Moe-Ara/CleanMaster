@@ -6,10 +6,37 @@ Single-page responsive landing page for a cleaning company, fully driven by envi
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Build Static (Netlify Ready)
+
+```bash
+npm run build
+```
+
+This generates a static site in `dist/`:
+
+- `dist/index.html`
+- `dist/robots.txt`
+- `dist/sitemap.xml`
+- `dist/public/*`
+
+## Deploy To Netlify
+
+`netlify.toml` is included with:
+
+- Build command: `npm run build`
+- Publish directory: `dist`
+
+In Netlify:
+
+1. Import the Git repo.
+2. Keep build settings from `netlify.toml`.
+3. Add your environment variables from `.env` in Site Settings > Environment Variables.
+4. Trigger deploy.
 
 ## Configure
 

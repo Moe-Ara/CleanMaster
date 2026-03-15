@@ -506,6 +506,23 @@ function renderPage(config) {
 </html>`;
 }
 
+function renderRobotsTxt() {
+  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
+  return `User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`;
+}
+
+function renderSitemapXml() {
+  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${escapeHtml(siteUrl)}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+}
+
 const staticAssetCacheSeconds = Number(value("STATIC_ASSET_CACHE_SECONDS", "0"));
 app.use(
   "/public",
@@ -525,25 +542,24 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/robots.txt", (_req, res) => {
-  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
-  const body = `User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`;
-  res.type("text/plain").send(body);
+  res.type("text/plain").send(renderRobotsTxt());
 });
 
 app.get("/sitemap.xml", (_req, res) => {
-  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${escapeHtml(siteUrl)}/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-  res.type("application/xml").send(body);
+  res.type("application/xml").send(renderSitemapXml());
 });
 
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`CleanMaster landing page running on http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`CleanMaster landing page running on http://localhost:${port}`);
+  });
+}
+
+module.exports = {
+  app,
+  buildConfig,
+  renderPage,
+  renderRobotsTxt,
+  renderSitemapXml
+};

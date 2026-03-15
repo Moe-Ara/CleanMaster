@@ -4,7 +4,9 @@
   "description": "Responsive SEO landing page for CleanMaster with env-driven content.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node build-static.js"
   },
   "keywords": [
     "landing-page",
