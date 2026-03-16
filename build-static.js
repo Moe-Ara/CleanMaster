@@ -25,7 +25,9 @@ function build() {
   ensureCleanDist();
   const config = buildConfig();
 
-  writeTextFile(path.join(distDir, "index.html"), renderPage(config));
+  writeTextFile(path.join(distDir, "index.html"), renderPage(config, config.defaultLanguage, "/"));
+  writeTextFile(path.join(distDir, "en", "index.html"), renderPage(config, "en", "/en/"));
+  writeTextFile(path.join(distDir, "de", "index.html"), renderPage(config, "de", "/de/"));
   writeTextFile(path.join(distDir, "robots.txt"), renderRobotsTxt());
   writeTextFile(path.join(distDir, "sitemap.xml"), renderSitemapXml());
 

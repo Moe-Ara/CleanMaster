@@ -9,35 +9,56 @@
     heroEyebrow: document.getElementById("hero-eyebrow"),
     heroTitle: document.getElementById("hero-title"),
     heroSubtitle: document.getElementById("hero-subtitle"),
-    heroVisualTag: document.getElementById("hero-visual-tag"),
-    heroVisualSubtag: document.getElementById("hero-visual-subtag"),
-    trustList: document.getElementById("trust-list"),
-    whatsappBtn: document.getElementById("whatsapp-btn"),
-    whatsappBtnLabel: document.getElementById("whatsapp-btn-label"),
-    emailBtn: document.getElementById("email-btn"),
-    emailBtnLabel: document.getElementById("email-btn-label"),
-    stepsTitle: document.getElementById("steps-title"),
-    stepsSubtitle: document.getElementById("steps-subtitle"),
-    stepsList: document.getElementById("steps-list"),
-    benefitsTitle: document.getElementById("benefits-title"),
-    benefitsSubtitle: document.getElementById("benefits-subtitle"),
-    benefitsList: document.getElementById("benefits-list"),
-    contactTitle: document.getElementById("contact-title"),
-    contactSubtitle: document.getElementById("contact-subtitle"),
-    phoneLabel: document.getElementById("phone-label"),
-    emailLabel: document.getElementById("email-label"),
-    addressLabel: document.getElementById("address-label"),
-    hoursLabel: document.getElementById("hours-label"),
-    serviceAreaLabel: document.getElementById("service-area-label"),
-    hoursText: document.getElementById("hours-text"),
-    serviceAreaText: document.getElementById("service-area-text"),
+    heroQuoteLabel: document.getElementById("hero-quote-label"),
+    heroCallLabel: document.getElementById("hero-call-label"),
+    heroBadges: document.getElementById("hero-badges"),
+
     servicesTitle: document.getElementById("services-title"),
     servicesSubtitle: document.getElementById("services-subtitle"),
-    servicesList: document.getElementById("services-list"),
+    servicesGrid: document.getElementById("services-grid"),
+
+    trustTitle: document.getElementById("trust-title"),
+    trustSubtitle: document.getElementById("trust-subtitle"),
+    trustStats: document.getElementById("trust-stats"),
+
     reviewsTitle: document.getElementById("reviews-title"),
     reviewsSubtitle: document.getElementById("reviews-subtitle"),
-    reviewsTrack: document.getElementById("reviews-track"),
-    footerLine: document.getElementById("footer-line")
+    reviewsGrid: document.getElementById("reviews-grid"),
+
+    beforeAfterTitle: document.getElementById("before-after-title"),
+    beforeAfterSubtitle: document.getElementById("before-after-subtitle"),
+    beforeLabel: document.getElementById("before-label"),
+    afterLabel: document.getElementById("after-label"),
+
+    serviceAreaTitle: document.getElementById("service-area-title"),
+    serviceAreaSubtitle: document.getElementById("service-area-subtitle"),
+    serviceCities: document.getElementById("service-cities"),
+
+    formTitle: document.getElementById("form-title"),
+    formSubtitle: document.getElementById("form-subtitle"),
+    formNameLabel: document.getElementById("form-name-label"),
+    formPhoneLabel: document.getElementById("form-phone-label"),
+    formEmailLabel: document.getElementById("form-email-label"),
+    formAddressLabel: document.getElementById("form-address-label"),
+    formCleaningTypeLabel: document.getElementById("form-cleaning-type-label"),
+    formMessageLabel: document.getElementById("form-message-label"),
+    formSubmit: document.getElementById("form-submit"),
+    cleaningTypeSelect: document.getElementById("cleaning-type"),
+
+    faqTitle: document.getElementById("faq-title"),
+    faqList: document.getElementById("faq-list"),
+
+    finalCtaTitle: document.getElementById("final-cta-title"),
+    finalCtaSubtitle: document.getElementById("final-cta-subtitle"),
+    finalQuoteLabel: document.getElementById("final-quote-label"),
+    finalCallLabel: document.getElementById("final-call-label"),
+
+    footerTagline: document.getElementById("footer-tagline"),
+    footerContactLabel: document.getElementById("footer-contact-label"),
+    footerHoursLabel: document.getElementById("footer-hours-label"),
+    footerServiceAreaLabel: document.getElementById("footer-service-area-label"),
+    footerSocialLabel: document.getElementById("footer-social-label"),
+    whatsappFloat: document.getElementById("whatsapp-float")
   };
 
   const meta = {
@@ -49,21 +70,14 @@
     twDescription: document.getElementById("twitter-description")
   };
 
-  let currentLang = config.defaultLanguage === "de" ? "de" : "en";
-  let reviewIndex = 0;
-  let reviewTimer = null;
   const iconPaths = {
-    service: ["/public/icon-sparkle.svg", "/public/icon-shield.svg", "/public/icon-calendar.svg"],
-    step: ["/public/icon-calendar.svg", "/public/icon-sparkle.svg", "/public/icon-shield.svg"],
-    benefit: ["/public/icon-shield.svg", "/public/icon-sparkle.svg", "/public/icon-calendar.svg"]
+    service: ["/public/icon-sparkle.svg", "/public/icon-shield.svg", "/public/icon-calendar.svg"]
   };
 
-  function iconFor(type, index) {
-    const list = iconPaths[type] || [];
-    if (!list.length) {
-      return "";
-    }
-    const iconPath = list[index % list.length];
+  let currentLang = config.defaultLanguage === "de" ? "de" : "en";
+
+  function iconFor(index) {
+    const iconPath = iconPaths.service[index % iconPaths.service.length];
     const version = encodeURIComponent(config.assetVersion || "1");
     return `${iconPath}?v=${version}`;
   }
@@ -71,11 +85,6 @@
   function buildWhatsappLink(lang) {
     const text = config.content[lang].whatsappMessage || "";
     return `https://wa.me/${config.company.whatsappNumber}?text=${encodeURIComponent(text)}`;
-  }
-
-  function buildEmailLink(lang) {
-    const subject = config.content[lang].emailSubject || "";
-    return `mailto:${config.company.email}?subject=${encodeURIComponent(subject)}`;
   }
 
   function setSeo(lang) {
@@ -104,158 +113,123 @@
     }
   }
 
-  function renderServices(services) {
-    elements.servicesList.innerHTML = "";
-    services.forEach((service, index) => {
-      const item = document.createElement("li");
-      item.className = "service-item";
-      const icon = document.createElement("img");
-      icon.className = "list-icon";
-      icon.src = iconFor("service", index);
-      icon.alt = "";
-      icon.setAttribute("aria-hidden", "true");
-
-      const label = document.createElement("span");
-      label.textContent = service;
-
-      item.appendChild(icon);
-      item.appendChild(label);
-      elements.servicesList.appendChild(item);
+  function renderHeroBadges(items) {
+    elements.heroBadges.innerHTML = "";
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.className = "hero-badge-item";
+      li.textContent = item;
+      elements.heroBadges.appendChild(li);
     });
   }
 
-  function renderTrust(points) {
-    elements.trustList.innerHTML = "";
-    points.forEach((point) => {
-      const item = document.createElement("li");
-      item.className = "trust-item";
-      item.textContent = point;
-      elements.trustList.appendChild(item);
-    });
-  }
-
-  function renderSteps(container, items) {
-    container.innerHTML = "";
-    items.forEach((itemText, index) => {
+  function renderServices(cards) {
+    elements.servicesGrid.innerHTML = "";
+    cards.forEach((cardData, index) => {
       const card = document.createElement("article");
-      card.className = "flow-card";
-
-      const top = document.createElement("div");
-      top.className = "card-top";
-
-      const badge = document.createElement("span");
-      badge.className = "step-index";
-      badge.textContent = `0${index + 1}`;
+      card.className = "service-card";
 
       const icon = document.createElement("img");
-      icon.className = "flow-icon";
-      icon.src = iconFor("step", index);
+      icon.className = "service-card-icon";
+      icon.src = iconFor(index);
       icon.alt = "";
       icon.setAttribute("aria-hidden", "true");
 
-      const text = document.createElement("p");
-      text.className = "flow-text";
-      text.textContent = itemText;
+      const title = document.createElement("h3");
+      title.textContent = cardData.title;
 
-      top.appendChild(badge);
-      top.appendChild(icon);
-      card.appendChild(top);
-      card.appendChild(text);
-      container.appendChild(card);
+      const desc = document.createElement("p");
+      desc.textContent = cardData.description;
+
+      card.appendChild(icon);
+      card.appendChild(title);
+      card.appendChild(desc);
+      elements.servicesGrid.appendChild(card);
     });
   }
 
-  function renderBenefits(container, items) {
-    container.innerHTML = "";
-    items.forEach((itemText, index) => {
+  function renderTrustStats(stats) {
+    elements.trustStats.innerHTML = "";
+    stats.forEach((item) => {
       const card = document.createElement("article");
-      card.className = "benefit-card";
+      card.className = "trust-stat-card";
 
-      const top = document.createElement("div");
-      top.className = "card-top";
+      const value = document.createElement("p");
+      value.className = "trust-stat-value";
+      value.textContent = item.value;
 
-      const icon = document.createElement("img");
-      icon.className = "flow-icon";
-      icon.src = iconFor("benefit", index);
-      icon.alt = "";
-      icon.setAttribute("aria-hidden", "true");
+      const label = document.createElement("p");
+      label.className = "trust-stat-label";
+      label.textContent = item.label;
 
-      const text = document.createElement("p");
-      text.className = "benefit-text";
-      text.textContent = itemText;
-
-      top.appendChild(icon);
-      card.appendChild(top);
-      card.appendChild(text);
-      container.appendChild(card);
+      card.appendChild(value);
+      card.appendChild(label);
+      elements.trustStats.appendChild(card);
     });
-  }
-
-  function createReviewCard(review) {
-    const card = document.createElement("article");
-    card.className = "review-card";
-
-    const header = document.createElement("div");
-    header.className = "review-header";
-
-    const avatar = document.createElement("img");
-    avatar.className = "review-avatar";
-    avatar.loading = "lazy";
-    avatar.alt = `${review.name} profile picture`;
-    avatar.src = review.image || config.company.defaultReviewAvatar;
-    avatar.addEventListener("error", () => {
-      avatar.src = config.company.defaultReviewAvatar;
-    });
-
-    const name = document.createElement("p");
-    name.className = "review-name";
-    name.textContent = review.name;
-
-    const rating = document.createElement("p");
-    rating.className = "review-rating";
-    const clamped = Math.max(1, Math.min(5, Number(review.rating) || 5));
-    rating.textContent = `${"\u2605".repeat(clamped)}${"\u2606".repeat(5 - clamped)}`;
-
-    const identity = document.createElement("div");
-    identity.appendChild(name);
-    identity.appendChild(rating);
-
-    header.appendChild(avatar);
-    header.appendChild(identity);
-
-    const text = document.createElement("p");
-    text.className = "review-text";
-    text.textContent = `"${review.text}"`;
-
-    card.appendChild(header);
-    card.appendChild(text);
-    return card;
-  }
-
-  function jumpToReview(index) {
-    elements.reviewsTrack.style.transform = `translateX(-${index * 100}%)`;
   }
 
   function renderReviews(reviews) {
-    elements.reviewsTrack.innerHTML = "";
-    reviews.forEach((review) => {
-      elements.reviewsTrack.appendChild(createReviewCard(review));
+    elements.reviewsGrid.innerHTML = "";
+    reviews.slice(0, 3).forEach((review) => {
+      const card = document.createElement("article");
+      card.className = "testimonial-card";
+
+      const stars = document.createElement("p");
+      stars.className = "testimonial-stars";
+      const rating = Math.max(1, Math.min(5, Number(review.rating) || 5));
+      stars.textContent = `${"\u2605".repeat(rating)}${"\u2606".repeat(5 - rating)}`;
+
+      const text = document.createElement("p");
+      text.className = "testimonial-text";
+      text.textContent = `"${review.text}"`;
+
+      const name = document.createElement("p");
+      name.className = "testimonial-name";
+      name.textContent = review.name;
+
+      card.appendChild(stars);
+      card.appendChild(text);
+      card.appendChild(name);
+      elements.reviewsGrid.appendChild(card);
     });
+  }
 
-    if (reviewTimer) {
-      clearInterval(reviewTimer);
-      reviewTimer = null;
-    }
+  function renderCities(cities) {
+    elements.serviceCities.innerHTML = "";
+    cities.forEach((city) => {
+      const li = document.createElement("li");
+      li.className = "city-chip";
+      li.textContent = city;
+      elements.serviceCities.appendChild(li);
+    });
+  }
 
-    reviewIndex = 0;
-    jumpToReview(0);
+  function renderCleaningTypes(items) {
+    elements.cleaningTypeSelect.innerHTML = "";
+    items.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      elements.cleaningTypeSelect.appendChild(option);
+    });
+  }
 
-    if (reviews.length > 1) {
-      reviewTimer = setInterval(() => {
-        reviewIndex = (reviewIndex + 1) % reviews.length;
-        jumpToReview(reviewIndex);
-      }, 4200);
-    }
+  function renderFaqs(items) {
+    elements.faqList.innerHTML = "";
+    items.forEach((item) => {
+      const details = document.createElement("details");
+      details.className = "faq-item";
+
+      const summary = document.createElement("summary");
+      summary.textContent = item.question;
+
+      const answer = document.createElement("p");
+      answer.textContent = item.answer;
+
+      details.appendChild(summary);
+      details.appendChild(answer);
+      elements.faqList.appendChild(details);
+    });
   }
 
   function updateLanguageButtons(lang) {
@@ -271,40 +245,62 @@
     }
 
     document.documentElement.lang = lang;
+
     elements.heroEyebrow.textContent = content.heroEyebrow;
     elements.heroTitle.textContent = content.heroTitle;
     elements.heroSubtitle.textContent = content.heroSubtitle;
-    elements.heroVisualTag.textContent = content.heroVisualTag;
-    elements.heroVisualSubtag.textContent = content.heroVisualSubtag;
-    elements.stepsTitle.textContent = content.stepsTitle;
-    elements.stepsSubtitle.textContent = content.stepsSubtitle;
-    elements.benefitsTitle.textContent = content.benefitsTitle;
-    elements.benefitsSubtitle.textContent = content.benefitsSubtitle;
-    elements.contactTitle.textContent = content.contactTitle;
-    elements.contactSubtitle.textContent = content.contactSubtitle;
-    elements.phoneLabel.textContent = content.phoneLabel;
-    elements.emailLabel.textContent = content.emailLabel;
-    elements.addressLabel.textContent = content.addressLabel;
-    elements.hoursLabel.textContent = content.hoursLabel;
-    elements.serviceAreaLabel.textContent = content.serviceAreaLabel;
-    elements.hoursText.textContent = content.businessHours;
-    elements.serviceAreaText.textContent = content.serviceArea;
+    elements.heroQuoteLabel.textContent = content.ctaQuote;
+    elements.heroCallLabel.textContent = content.ctaCall;
+
     elements.servicesTitle.textContent = content.servicesTitle;
     elements.servicesSubtitle.textContent = content.servicesSubtitle;
+
+    elements.trustTitle.textContent = content.trustTitle;
+    elements.trustSubtitle.textContent = content.trustSubtitle;
+
     elements.reviewsTitle.textContent = content.reviewsTitle;
     elements.reviewsSubtitle.textContent = content.reviewsSubtitle;
-    elements.footerLine.textContent = content.footerLine;
 
-    elements.whatsappBtnLabel.textContent = content.ctaWhatsapp;
-    elements.emailBtnLabel.textContent = content.ctaEmail;
-    elements.whatsappBtn.href = buildWhatsappLink(lang);
-    elements.emailBtn.href = buildEmailLink(lang);
+    elements.beforeAfterTitle.textContent = content.beforeAfterTitle;
+    elements.beforeAfterSubtitle.textContent = content.beforeAfterSubtitle;
+    elements.beforeLabel.textContent = content.beforeLabel;
+    elements.afterLabel.textContent = content.afterLabel;
 
-    renderTrust(content.trustPoints);
-    renderSteps(elements.stepsList, content.steps);
-    renderBenefits(elements.benefitsList, content.benefits);
-    renderServices(content.services);
+    elements.serviceAreaTitle.textContent = content.serviceAreaTitle;
+    elements.serviceAreaSubtitle.textContent = content.serviceAreaSubtitle;
+
+    elements.formTitle.textContent = content.formTitle;
+    elements.formSubtitle.textContent = content.formSubtitle;
+    elements.formNameLabel.textContent = content.formNameLabel;
+    elements.formPhoneLabel.textContent = content.formPhoneLabel;
+    elements.formEmailLabel.textContent = content.formEmailLabel;
+    elements.formAddressLabel.textContent = content.formAddressLabel;
+    elements.formCleaningTypeLabel.textContent = content.formCleaningTypeLabel;
+    elements.formMessageLabel.textContent = content.formMessageLabel;
+    elements.formSubmit.textContent = content.formSubmit;
+    elements.faqTitle.textContent = content.faqTitle;
+
+    elements.finalCtaTitle.textContent = content.finalCtaTitle;
+    elements.finalCtaSubtitle.textContent = content.finalCtaSubtitle;
+    elements.finalQuoteLabel.textContent = content.finalCtaQuote;
+    elements.finalCallLabel.textContent = content.finalCtaCall;
+
+    elements.footerTagline.textContent = content.footerTagline;
+    elements.footerContactLabel.textContent = content.footerContactLabel;
+    elements.footerHoursLabel.textContent = content.footerHoursLabel;
+    elements.footerServiceAreaLabel.textContent = content.footerServiceAreaLabel;
+    elements.footerSocialLabel.textContent = content.footerSocialLabel;
+
+    elements.whatsappFloat.href = buildWhatsappLink(lang);
+
+    renderHeroBadges(content.heroBadges);
+    renderServices(content.serviceCards);
+    renderTrustStats(content.trustStats);
     renderReviews(content.reviews);
+    renderCities(content.serviceCities);
+    renderCleaningTypes(content.cleaningTypes);
+    renderFaqs(content.faqItems);
+
     setSeo(lang);
     updateLanguageButtons(lang);
   }
@@ -312,11 +308,11 @@
   langButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const nextLang = button.dataset.lang === "de" ? "de" : "en";
-      if (nextLang === currentLang) {
+      const targetPath = nextLang === "de" ? "/de/" : "/en/";
+      if (window.location.pathname === targetPath || window.location.pathname === targetPath.slice(0, -1)) {
         return;
       }
-      currentLang = nextLang;
-      render(currentLang);
+      window.location.href = targetPath;
     });
   });
 

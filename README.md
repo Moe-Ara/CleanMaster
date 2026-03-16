@@ -47,13 +47,18 @@ Edit `.env` to change all business/content values:
 - Language: `DEFAULT_LANGUAGE=en|de`.
 - SEO: `SITE_URL`, `SEO_TITLE_*`, `SEO_DESCRIPTION_*`, `SEO_KEYWORDS_*`, `SEO_OG_IMAGE`.
 - Asset cache control: `ASSET_VERSION` (bump to force refresh), `STATIC_ASSET_CACHE_SECONDS` (set `0` while developing).
+- SEO localization: `SEO_LOCALE_EN`, `SEO_LOCALE_DE`, `SEO_AUTHOR`, `SEO_TWITTER_SITE`.
 - Content per language: all `*_EN` and `*_DE` keys.
 - New homepage sections:
-  - hero visual note: `HERO_VISUAL_TAG_*`, `HERO_VISUAL_SUBTAG_*`
-  - trust highlights: `TRUST_POINTS_*` (use `|` separator)
-  - process flow: `STEPS_TITLE_*`, `STEPS_SUBTITLE_*`, `STEPS_*` (use `|`)
-  - benefits grid: `BENEFITS_TITLE_*`, `BENEFITS_SUBTITLE_*`, `BENEFITS_*` (use `|`)
-- Services list: `SERVICES_EN`, `SERVICES_DE` using `|` separator.
+- Hero conversion: `CTA_QUOTE_*`, `CTA_CALL_*`, `HERO_BADGES_*` (use `|`)
+- Service cards: `SERVICE_CARDS_*` using `Title||Description` with `;;` separator.
+- Trust section: `TRUST_TITLE_*`, `TRUST_SUBTITLE_*`, `TRUST_STATS_*` using `Value||Label` with `;;`.
+- Before/After: `BEFORE_AFTER_*`, `BEFORE_IMAGE`, `AFTER_IMAGE`.
+- Service area list: `SERVICE_AREA_TITLE_*`, `SERVICE_AREA_SUBTITLE_*`, `SERVICE_CITIES_*` (use `|`).
+- Quote form labels/types: `FORM_*`, `CLEANING_TYPES_*` (use `|`).
+- Final CTA: `FINAL_CTA_*`.
+- Footer labels/social links: `FOOTER_*`, `SOCIAL_FACEBOOK_URL`, `SOCIAL_INSTAGRAM_URL`, `SOCIAL_GOOGLE_URL`.
+- FAQ SEO section: `FAQ_TITLE_*`, `FAQS_*` (`Question||Answer` with `;;` separator).
 - Reviews slider placeholders: `REVIEWS_EN`, `REVIEWS_DE` using:
   - review separator: `;;`
   - fields per review: `Name||Text||Rating||ImageURL` (`ImageURL` is optional)
@@ -68,6 +73,7 @@ REVIEWS_EN=Alex||Very reliable and detailed.||5||/public/avatar-placeholder.svg;
 ## Notes
 
 - WhatsApp button opens direct chat via `wa.me`.
-- Email button opens a `mailto:` link.
-- Language switch (EN/DE) updates page content and CTA messages instantly.
-- SEO includes canonical, Open Graph, Twitter tags, `robots.txt`, `sitemap.xml`, and LocalBusiness schema.
+- Language switch (EN/DE) updates all major sections and CTA messages instantly.
+- Crawlable localized pages are generated at `/en/` and `/de/` with hreflang/canonical tags.
+- Lead form is Netlify-compatible (`data-netlify=\"true\"`).
+- SEO includes canonical/hreflang, Open Graph, Twitter tags, `robots.txt`, `sitemap.xml`, and JSON-LD (`LocalBusiness`, `WebSite`, `FAQPage`).
