@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Gardening icon">
+  <path d="M32 54c-10 0-18-8-18-18 10 0 18 8 18 18z" fill="#2f9a54"/>
+  <path d="M32 54c10 0 18-8 18-18-10 0-18 8-18 18z" fill="#37ad5f"/>
+  <rect x="29" y="16" width="6" height="32" rx="3" fill="#2c7f47"/>
+  <circle cx="24" cy="20" r="8" fill="#56c97b"/>
+  <circle cx="40" cy="18" r="7" fill="#56c97b"/>
+</svg>

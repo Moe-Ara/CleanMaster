@@ -261,7 +261,6 @@ h1 {
 .services-grid,
 .trust-stats,
 .testimonials-grid,
-.before-after-grid,
 .quote-layout,
 .footer-grid {
   margin-top: 0.8rem;
@@ -270,29 +269,97 @@ h1 {
 .services-grid {
   display: grid;
   gap: 0.75rem;
+  align-items: stretch;
 }
 
 .service-card {
-  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(150deg, #ffffff 0%, #f4fbff 100%);
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 0.9rem;
   box-shadow: var(--shadow);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.service-card-button {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.service-card-button:hover {
+  transform: translateY(-2px);
+  border-color: #bad5e7;
+  box-shadow: 0 16px 34px rgba(20, 56, 78, 0.13);
+}
+
+.service-card-button:focus-visible {
+  outline: 3px solid rgba(12, 122, 139, 0.35);
+  outline-offset: 2px;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(140deg, rgba(5, 64, 78, 0.68), rgba(12, 122, 139, 0.48)), var(--service-bg);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  z-index: 0;
+}
+
+.service-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.service-card-photo {
+  display: block;
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #d4e6f2;
 }
 
 .service-card-icon {
   width: 28px;
   height: 28px;
+  padding: 0.32rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #d4e6f2;
 }
 
 .service-card h3 {
   margin: 0.5rem 0 0.25rem;
   font-size: 1.03rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .service-card p {
   margin: 0;
   color: var(--muted);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .trust-section {
@@ -329,19 +396,91 @@ h1 {
 }
 
 .testimonials-grid {
-  display: grid;
+  display: flex;
   gap: 0.65rem;
+  transition: transform 360ms ease;
+  will-change: transform;
+}
+
+.reviews-slider {
+  --cards-per-view: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.reviews-viewport {
+  overflow: hidden;
+}
+
+.reviews-nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid #c9dbea;
+  background: #fff;
+  color: #1f4f66;
+  font-size: 1.45rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(20, 60, 86, 0.1);
+}
+
+.reviews-nav-btn:hover {
+  background: #f2f8fd;
+}
+
+.reviews-dots {
+  margin-top: 0.62rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.reviews-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 0;
+  background: #b6ccd9;
+  cursor: pointer;
+  padding: 0;
+}
+
+.reviews-dot.active {
+  background: var(--brand);
 }
 
 .testimonial-card {
+  flex: 0 0 calc((100% - ((var(--cards-per-view) - 1) * 0.65rem)) / var(--cards-per-view));
+  min-width: 0;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 0.82rem;
 }
 
+.testimonial-head {
+  display: flex;
+  align-items: center;
+  gap: 0.58rem;
+}
+
+.testimonial-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #d7e6f2;
+  background: #edf5fb;
+}
+
 .testimonial-stars {
-  margin: 0;
+  margin: 0.15rem 0 0;
   color: #f5ac38;
   letter-spacing: 0.06em;
 }
@@ -352,34 +491,8 @@ h1 {
 }
 
 .testimonial-name {
-  margin: 0.5rem 0 0;
-  font-weight: 700;
-}
-
-.before-after-grid {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.compare-card {
   margin: 0;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.compare-card img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.compare-card figcaption {
-  padding: 0.65rem 0.8rem;
-  font-weight: 800;
-  border-top: 1px solid var(--line);
-  background: #f9fcff;
+  font-weight: 700;
 }
 
 .city-list {
@@ -498,6 +611,74 @@ h1 {
   padding: 1.6rem 0 5.6rem;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+.service-modal[hidden] {
+  display: none;
+}
+
+.service-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.service-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 28, 40, 0.6);
+}
+
+.service-modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 92vw);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 24px 54px rgba(11, 40, 58, 0.24);
+}
+
+.service-modal-close {
+  margin-left: auto;
+  margin-bottom: 0.35rem;
+  border: 1px solid #c5d9e9;
+  background: #fff;
+  color: #1f465d;
+  border-radius: 999px;
+  padding: 0.42rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.service-modal-label {
+  margin: 0;
+  color: var(--brand-dark);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+
+.service-modal-title {
+  margin: 0.35rem 0 0.3rem;
+  font-size: 1.2rem;
+}
+
+#service-modal-description {
+  margin: 0;
+  color: #38576b;
+}
+
 .footer-grid {
   display: grid;
   gap: 1rem;
@@ -590,9 +771,7 @@ h1 {
   }
 
   .services-grid,
-  .testimonials-grid,
-  .trust-stats,
-  .before-after-grid {
+  .trust-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -608,16 +787,11 @@ h1 {
 
 @media (min-width: 980px) {
   .services-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(180px, 1fr));
   }
 
-  .trust-stats,
-  .testimonials-grid {
+  .trust-stats {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .before-after-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .quote-layout {

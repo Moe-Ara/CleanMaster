@@ -7,48 +7,74 @@ dotenv.config();
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
-const iconPaths = {
-  service: ["/public/icon-sparkle.svg", "/public/icon-shield.svg", "/public/icon-calendar.svg"]
-};
+const serviceIconFallbacks = [
+  "/public/icon-service-cleaning.svg",
+  "/public/icon-service-painting.svg",
+  "/public/icon-service-decor.svg",
+  "/public/icon-service-gardening.svg",
+  "/public/icon-service-maintenance.svg"
+];
+
+const serviceBackgroundPaths = [
+  "/public/service-bg-cleaning.svg",
+  "/public/service-bg-painting.svg",
+  "/public/service-bg-decor.svg",
+  "/public/service-bg-gardening.svg",
+  "/public/service-bg-maintenance.svg"
+];
+
+const servicePhotoFallbacks = [
+  "/public/service-photo-cleaning.jpg",
+  "/public/service-photo-painting.jpg",
+  "/public/service-photo-decor.jpg",
+  "/public/service-photo-gardening.jpg",
+  "/public/service-photo-maintenance.jpg"
+];
 
 const fallbackReviewsEn = [
   { name: "Sarah M.", text: "Outstanding quality and always on time.", rating: 5 },
   { name: "David R.", text: "Our office has never looked better.", rating: 5 },
-  { name: "Lina K.", text: "Professional team and excellent communication.", rating: 5 }
+  { name: "Lina K.", text: "Professional team and excellent communication.", rating: 5 },
+  { name: "Emma T.", text: "The painting and cleanup were both done perfectly.", rating: 5 },
+  { name: "Noah P.", text: "Great gardening support and very friendly staff.", rating: 4 },
+  { name: "Mia L.", text: "Fast quote, clear process, and excellent final result.", rating: 5 }
 ];
 
 const fallbackReviewsDe = [
   { name: "Anna B.", text: "Sehr zuverlaessig und gruendlich.", rating: 5 },
   { name: "Markus W.", text: "Top Service fuer unser Buero.", rating: 5 },
-  { name: "Julia H.", text: "Professionell, schnell und freundlich.", rating: 5 }
+  { name: "Julia H.", text: "Professionell, schnell und freundlich.", rating: 5 },
+  { name: "Sophie T.", text: "Malerarbeiten und Reinigung waren einwandfrei.", rating: 5 },
+  { name: "Lukas P.", text: "Sehr gute Gartenpflege und puenktliches Team.", rating: 4 },
+  { name: "Mila L.", text: "Schnelles Angebot, klare Kommunikation, top Ergebnis.", rating: 5 }
 ];
 
 const fallbackServiceCardsEn = [
-  { title: "House Cleaning", description: "Regular or one-time home cleaning tailored to your schedule." },
-  { title: "Office Cleaning", description: "Consistent and discreet cleaning for productive workspaces." },
-  { title: "Deep Cleaning", description: "Thorough detail cleaning for kitchens, bathrooms, and high-touch zones." },
-  { title: "Move Out Cleaning", description: "End-of-tenancy cleaning to leave the property spotless." },
-  { title: "Window Cleaning", description: "Streak-free interior window cleaning for a brighter home." }
+  { title: "Cleaning Services", description: "Regular and deep cleaning for homes, offices, and commercial spaces." },
+  { title: "Painting Services", description: "Interior and exterior painting with careful preparation and clean finish." },
+  { title: "Decor & Styling", description: "Room refresh support and finishing details for a polished look." },
+  { title: "Gardening Services", description: "Garden maintenance, trimming, cleanup, and seasonal outdoor care." },
+  { title: "Property Maintenance", description: "Move-in/move-out prep, small fixes, and ongoing upkeep." }
 ];
 
 const fallbackServiceCardsDe = [
-  { title: "Hausreinigung", description: "Regelmaessige oder einmalige Reinigung nach Ihrem Zeitplan." },
-  { title: "Bueroreinigung", description: "Zuverlaessige Reinigung fuer ein professionelles Arbeitsumfeld." },
-  { title: "Grundreinigung", description: "Intensive Reinigung fuer Kueche, Bad und stark genutzte Bereiche." },
-  { title: "Auszugsreinigung", description: "Sorgfaeltige Endreinigung fuer eine problemlose Uebergabe." },
-  { title: "Fensterreinigung", description: "Streifenfreie Fenster fuer mehr Licht und einen besseren Eindruck." }
+  { title: "Reinigungsservice", description: "Regelmaessige und gruendliche Reinigung fuer Wohn- und Gewerbeobjekte." },
+  { title: "Malerarbeiten", description: "Innen- und Aussenanstrich mit sauberer Vorbereitung und hochwertigem Ergebnis." },
+  { title: "Dekoration & Styling", description: "Raumaufwertung, Einrichtungshilfe und stilvolle Details fuer ein gepflegtes Gesamtbild." },
+  { title: "Gartenservice", description: "Pflege, Rueckschnitt, Aufraeumen und saisonale Gartenarbeiten." },
+  { title: "Objektpflege & Instandhaltung", description: "Einzugs-/Auszugsvorbereitung, kleine Reparaturen und laufende Pflege." }
 ];
 
 const fallbackTrustStatsEn = [
   { value: "10+", label: "Years of Experience" },
-  { value: "2,500+", label: "Homes Cleaned" },
+  { value: "2,500+", label: "Projects Completed" },
   { value: "100%", label: "Satisfaction Guarantee" },
   { value: "Fully", label: "Insured & Reliable" }
 ];
 
 const fallbackTrustStatsDe = [
   { value: "10+", label: "Jahre Erfahrung" },
-  { value: "2.500+", label: "Gereinigte Haushalte" },
+  { value: "2.500+", label: "Abgeschlossene Projekte" },
   { value: "100%", label: "Zufriedenheitsgarantie" },
   { value: "Voll", label: "Versichert & Zuverlaessig" }
 ];
@@ -59,12 +85,12 @@ const fallbackFaqsEn = [
     answer: "Most quote requests are answered within one business day."
   },
   {
-    question: "Do I need to provide cleaning supplies?",
-    answer: "No, our team can bring professional cleaning supplies and equipment."
+    question: "Do you only provide cleaning services?",
+    answer: "No, we also provide painting, decor, gardening, and broader property services."
   },
   {
-    question: "Are your cleaners insured?",
-    answer: "Yes, our cleaners are fully insured and background-checked."
+    question: "Are your team members insured?",
+    answer: "Yes, our team is fully insured and background-checked."
   }
 ];
 
@@ -74,12 +100,12 @@ const fallbackFaqsDe = [
     answer: "Die meisten Angebotsanfragen beantworten wir innerhalb eines Werktags."
   },
   {
-    question: "Muss ich Reinigungsmittel bereitstellen?",
-    answer: "Nein, unser Team bringt auf Wunsch professionelle Reinigungsmittel und Geraete mit."
+    question: "Bieten Sie nur Reinigung an?",
+    answer: "Nein, wir bieten auch Malerarbeiten, Dekoration, Gartenservice und weitere Objektservices."
   },
   {
-    question: "Sind Ihre Reinigungskraefte versichert?",
-    answer: "Ja, unsere Reinigungskraefte sind voll versichert und geprueft."
+    question: "Ist Ihr Team versichert?",
+    answer: "Ja, unser Team ist voll versichert und geprueft."
   }
 ];
 
@@ -89,6 +115,15 @@ function value(name, fallbackValue) {
     return envValue.trim();
   }
   return fallbackValue;
+}
+
+function parsePositiveInt(name, fallbackValue) {
+  const raw = value(name, String(fallbackValue));
+  const parsed = Number.parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    return fallbackValue;
+  }
+  return parsed;
 }
 
 function parsePipeList(name, fallbackList) {
@@ -261,6 +296,25 @@ function escapeHtml(text) {
     .replace(/'/g, "&#39;");
 }
 
+function normalizedSiteUrl() {
+  return value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
+}
+
+function defaultRobotsForSite(siteUrl) {
+  return siteUrl.includes(".example")
+    ? "noindex,nofollow"
+    : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+}
+
+function resolvedRobots(siteUrl) {
+  return value("SEO_ROBOTS", defaultRobotsForSite(siteUrl));
+}
+
+function shouldBlockCrawlers(robotsValue) {
+  const normalized = String(robotsValue || "").toLowerCase();
+  return normalized.includes("noindex") || normalized.includes("none");
+}
+
 function averageRating(reviews) {
   if (!reviews.length) {
     return 5;
@@ -269,12 +323,71 @@ function averageRating(reviews) {
   return Number((sum / reviews.length).toFixed(1));
 }
 
-function iconFor(type, index) {
-  const list = iconPaths[type] || [];
-  if (!list.length) {
+function serviceIconFor(index, title) {
+  const normalized = String(title || "").toLowerCase();
+  if (normalized.includes("paint") || normalized.includes("maler")) {
+    return "/public/icon-service-painting.svg";
+  }
+  if (
+    normalized.includes("decor") ||
+    normalized.includes("dekor") ||
+    normalized.includes("styling") ||
+    normalized.includes("design")
+  ) {
+    return "/public/icon-service-decor.svg";
+  }
+  if (normalized.includes("garden") || normalized.includes("garten")) {
+    return "/public/icon-service-gardening.svg";
+  }
+  if (
+    normalized.includes("maintenance") ||
+    normalized.includes("objekt") ||
+    normalized.includes("instand") ||
+    normalized.includes("repair")
+  ) {
+    return "/public/icon-service-maintenance.svg";
+  }
+  if (normalized.includes("clean") || normalized.includes("reinig")) {
+    return "/public/icon-service-cleaning.svg";
+  }
+  return serviceIconFallbacks[index % serviceIconFallbacks.length];
+}
+
+function serviceBackgroundFor(index) {
+  if (!serviceBackgroundPaths.length) {
     return "";
   }
-  return list[index % list.length];
+  return serviceBackgroundPaths[index % serviceBackgroundPaths.length];
+}
+
+function servicePhotoFor(index, title) {
+  const normalized = String(title || "").toLowerCase();
+  if (normalized.includes("paint") || normalized.includes("maler")) {
+    return "/public/service-photo-painting.jpg";
+  }
+  if (
+    normalized.includes("decor") ||
+    normalized.includes("dekor") ||
+    normalized.includes("styling") ||
+    normalized.includes("design")
+  ) {
+    return "/public/service-photo-decor.jpg";
+  }
+  if (normalized.includes("garden") || normalized.includes("garten")) {
+    return "/public/service-photo-gardening.jpg";
+  }
+  if (
+    normalized.includes("maintenance") ||
+    normalized.includes("objekt") ||
+    normalized.includes("instand") ||
+    normalized.includes("repair")
+  ) {
+    return "/public/service-photo-maintenance.jpg";
+  }
+  if (normalized.includes("clean") || normalized.includes("reinig")) {
+    return "/public/service-photo-cleaning.jpg";
+  }
+  return servicePhotoFallbacks[index % servicePhotoFallbacks.length];
 }
 
 function buildLanguageBlock(lang) {
@@ -282,29 +395,33 @@ function buildLanguageBlock(lang) {
   const isEnglish = lang === "en";
   const fallbackImage = value("DEFAULT_REVIEW_AVATAR", "/public/avatar-placeholder.svg");
   return {
-    heroEyebrow: value(`HERO_EYEBROW_${suffix}`, isEnglish ? "Trusted Local Cleaning Team" : "Ihr Lokaler Reinigungsservice"),
+    heroEyebrow: value(`HERO_EYEBROW_${suffix}`, isEnglish ? "Trusted Local Home Service Team" : "Ihr Lokales Hausservice-Team"),
     heroTitle: value(
       `HERO_TITLE_${suffix}`,
-      isEnglish ? "A Spotless Home Without The Stress" : "Ein Sauberes Zuhause Ohne Stress"
+      isEnglish ? "One Team For Cleaning, Painting, Decor, Gardening And More" : "Ein Team Fuer Reinigung, Malerarbeiten, Deko, Garten Und Mehr"
     ),
     heroSubtitle: value(
       `HERO_SUBTITLE_${suffix}`,
       isEnglish
-        ? "Professional, insured cleaners with transparent pricing and reliable appointments."
-        : "Professionelle, versicherte Reinigungskraefte mit transparenten Preisen und zuverlaessigen Terminen."
+        ? "Reliable home and property services with transparent pricing and professional results."
+        : "Zuverlaessige Haus- und Objektservices mit transparenten Preisen und professionellen Ergebnissen."
     ),
     ctaQuote: value(`CTA_QUOTE_${suffix}`, isEnglish ? "Get a Free Quote" : "Kostenloses Angebot"),
     ctaCall: value(`CTA_CALL_${suffix}`, isEnglish ? "Call Now" : "Jetzt Anrufen"),
     heroBadges: parsePipeList(
       `HERO_BADGES_${suffix}`,
-      isEnglish ? ["Insured", "Professional Cleaners", "5 Star Service"] : ["Versichert", "Professionelle Reinigung", "5-Sterne-Service"]
+      isEnglish ? ["Insured", "Skilled Multi-Service Team", "5 Star Service"] : ["Versichert", "Erfahrenes Multi-Service-Team", "5-Sterne-Service"]
     ),
 
-    servicesTitle: value(`SERVICES_TITLE_${suffix}`, isEnglish ? "Our Cleaning Services" : "Unsere Reinigungsleistungen"),
+    servicesTitle: value(`SERVICES_TITLE_${suffix}`, isEnglish ? "Our Services" : "Unsere Leistungen"),
     servicesSubtitle: value(
       `SERVICES_SUBTITLE_${suffix}`,
-      isEnglish ? "Choose the service that fits your home, office, or move." : "Waehlen Sie den Service, der zu Zuhause, Buero oder Umzug passt."
+      isEnglish
+        ? "From cleaning to painting and gardening, we handle the work that keeps your property in top shape."
+        : "Von Reinigung bis Gartenpflege: Wir erledigen die Arbeiten, die Ihre Immobilie im besten Zustand halten."
     ),
+    serviceModalLabel: value(`SERVICE_MODAL_LABEL_${suffix}`, isEnglish ? "About this service" : "Über diesen Service"),
+    serviceModalClose: value(`SERVICE_MODAL_CLOSE_${suffix}`, isEnglish ? "Close" : "Schließen"),
     serviceCards: parseCardList(`SERVICE_CARDS_${suffix}`, isEnglish ? fallbackServiceCardsEn : fallbackServiceCardsDe),
 
     trustTitle: value(`TRUST_TITLE_${suffix}`, isEnglish ? "Trusted By Homeowners Across The Area" : "Vertrauen Von Haushalten In Der Region"),
@@ -320,14 +437,6 @@ function buildLanguageBlock(lang) {
       isEnglish ? "Real feedback from clients who trust CleanMaster." : "Echtes Feedback von Kundinnen und Kunden, die CleanMaster vertrauen."
     ),
     reviews: parseReviews(`REVIEWS_${suffix}`, isEnglish ? fallbackReviewsEn : fallbackReviewsDe, fallbackImage),
-
-    beforeAfterTitle: value(`BEFORE_AFTER_TITLE_${suffix}`, isEnglish ? "See The Difference" : "Sehen Sie Den Unterschied"),
-    beforeAfterSubtitle: value(
-      `BEFORE_AFTER_SUBTITLE_${suffix}`,
-      isEnglish ? "Before and after examples of our detailed cleaning work." : "Vorher-Nachher-Beispiele unserer gruendlichen Reinigungsarbeit."
-    ),
-    beforeLabel: value(`BEFORE_LABEL_${suffix}`, isEnglish ? "Before" : "Vorher"),
-    afterLabel: value(`AFTER_LABEL_${suffix}`, isEnglish ? "After" : "Nachher"),
 
     serviceAreaTitle: value(`SERVICE_AREA_TITLE_${suffix}`, isEnglish ? "Service Area" : "Einsatzgebiet"),
     serviceAreaSubtitle: value(
@@ -351,27 +460,35 @@ function buildLanguageBlock(lang) {
     formPhoneLabel: value(`FORM_PHONE_LABEL_${suffix}`, isEnglish ? "Phone" : "Telefon"),
     formEmailLabel: value(`FORM_EMAIL_LABEL_${suffix}`, isEnglish ? "Email" : "E-Mail"),
     formAddressLabel: value(`FORM_ADDRESS_LABEL_${suffix}`, isEnglish ? "Address" : "Adresse"),
-    formCleaningTypeLabel: value(`FORM_CLEANING_TYPE_LABEL_${suffix}`, isEnglish ? "Cleaning Type" : "Reinigungsart"),
+    formServiceTypeLabel: value(
+      `FORM_SERVICE_TYPE_LABEL_${suffix}`,
+      value(`FORM_CLEANING_TYPE_LABEL_${suffix}`, isEnglish ? "Service Type" : "Serviceart")
+    ),
     formMessageLabel: value(`FORM_MESSAGE_LABEL_${suffix}`, isEnglish ? "Message" : "Nachricht"),
     formSubmit: value(`FORM_SUBMIT_${suffix}`, isEnglish ? "Get My Free Quote" : "Mein Kostenloses Angebot"),
-    cleaningTypes: parsePipeList(
-      `CLEANING_TYPES_${suffix}`,
-      isEnglish
-        ? ["House Cleaning", "Office Cleaning", "Deep Cleaning", "Move Out Cleaning", "Window Cleaning"]
-        : ["Hausreinigung", "Bueroreinigung", "Grundreinigung", "Auszugsreinigung", "Fensterreinigung"]
+    serviceTypes: parsePipeList(
+      `SERVICE_TYPES_${suffix}`,
+      parsePipeList(
+        `CLEANING_TYPES_${suffix}`,
+        isEnglish
+          ? ["Cleaning Services", "Painting Services", "Decor & Styling", "Gardening Services", "Property Maintenance", "Other"]
+          : ["Reinigungsservice", "Malerarbeiten", "Dekoration & Styling", "Gartenservice", "Objektpflege & Instandhaltung", "Andere"]
+      )
     ),
 
-    finalCtaTitle: value(`FINAL_CTA_TITLE_${suffix}`, isEnglish ? "Ready for a Spotless Home?" : "Bereit Fuer Ein Makellos Sauberes Zuhause?"),
+    finalCtaTitle: value(`FINAL_CTA_TITLE_${suffix}`, isEnglish ? "Ready to Upgrade Your Home?" : "Bereit Fuer Ein Gepflegtes Zuhause?"),
     finalCtaSubtitle: value(
       `FINAL_CTA_SUBTITLE_${suffix}`,
-      isEnglish ? "Book your cleaning today and enjoy your free time again." : "Buchen Sie noch heute und geniessen Sie wieder Ihre freie Zeit."
+      isEnglish
+        ? "Book your service today and enjoy a cleaner, better-maintained property."
+        : "Buchen Sie noch heute Ihren Service und geniessen Sie mehr freie Zeit."
     ),
     finalCtaQuote: value(`FINAL_CTA_QUOTE_${suffix}`, isEnglish ? "Get Free Quote" : "Kostenloses Angebot"),
     finalCtaCall: value(`FINAL_CTA_CALL_${suffix}`, isEnglish ? "Call Now" : "Jetzt Anrufen"),
 
     footerTagline: value(
       `FOOTER_TAGLINE_${suffix}`,
-      isEnglish ? "Clean spaces. Reliable service. Professional standards." : "Saubere Raeume. Zuverlaessiger Service. Professionelle Standards."
+      isEnglish ? "Well-kept spaces. Reliable service. Professional standards." : "Gepflegte Raeume. Zuverlaessiger Service. Professionelle Standards."
     ),
     footerContactLabel: value(`FOOTER_CONTACT_LABEL_${suffix}`, isEnglish ? "Contact" : "Kontakt"),
     footerHoursLabel: value(`FOOTER_HOURS_LABEL_${suffix}`, isEnglish ? "Business Hours" : "Oeffnungszeiten"),
@@ -382,14 +499,14 @@ function buildLanguageBlock(lang) {
     serviceArea: value(`SERVICE_AREA_${suffix}`, isEnglish ? "Greater Berlin Area" : "Grossraum Berlin"),
     whatsappMessage: value(
       `WHATSAPP_MESSAGE_${suffix}`,
-      isEnglish ? "Hello CleanMaster, I would like a free cleaning quote." : "Hallo CleanMaster, ich moechte ein kostenloses Reinigungsangebot."
+      isEnglish ? "Hello CleanMaster, I would like a quote for your services." : "Hallo CleanMaster, ich moechte ein Angebot fuer Ihre Services."
     )
   };
 }
 
 function buildConfig() {
   const defaultLanguage = value("DEFAULT_LANGUAGE", "en").toLowerCase() === "de" ? "de" : "en";
-  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example");
+  const siteUrl = normalizedSiteUrl();
   return {
     assetVersion: value("ASSET_VERSION", "1"),
     company: {
@@ -409,40 +526,47 @@ function buildConfig() {
       googleUrl: value("SOCIAL_GOOGLE_URL", "#")
     },
     assets: {
-      heroBackgroundImage: value("HERO_BG_IMAGE", "/public/hero-cleaning.svg"),
-      beforeImage: value("BEFORE_IMAGE", "/public/before-placeholder.svg"),
-      afterImage: value("AFTER_IMAGE", "/public/after-placeholder.svg")
+      heroBackgroundImage: value("HERO_BG_IMAGE", "/public/hero-cleaning.svg")
     },
     siteUrl,
     defaultLanguage,
     seo: {
       en: {
-        title: value("SEO_TITLE_EN", "CleanMaster | Professional Cleaning Services"),
+        title: value("SEO_TITLE_EN", "CleanMaster | Home Services, Painting, Decor & Gardening"),
         locale: value("SEO_LOCALE_EN", "en_US"),
+        ogImageAlt: value("SEO_OG_IMAGE_ALT_EN", "CleanMaster home services team at work"),
         description: value(
           "SEO_DESCRIPTION_EN",
-          "CleanMaster offers trusted house and office cleaning services. Get a free quote today."
+          "CleanMaster offers trusted home services including cleaning, painting, decor, gardening and maintenance."
         ),
         keywords: value(
           "SEO_KEYWORDS_EN",
-          "cleaning company, house cleaning, office cleaning, deep cleaning, move out cleaning"
+          "home services company, cleaning, painting services, decor services, gardening services, property maintenance"
         )
       },
       de: {
-        title: value("SEO_TITLE_DE", "CleanMaster | Professionelle Reinigungsservices"),
+        title: value("SEO_TITLE_DE", "CleanMaster | Hausservice, Malerarbeiten, Deko & Garten"),
         locale: value("SEO_LOCALE_DE", "de_DE"),
+        ogImageAlt: value("SEO_OG_IMAGE_ALT_DE", "CleanMaster Hausservice-Team bei der Arbeit"),
         description: value(
           "SEO_DESCRIPTION_DE",
-          "CleanMaster bietet zuverlaessige Haus- und Bueroreinigung. Jetzt kostenloses Angebot anfordern."
+          "CleanMaster bietet zuverlaessige Hausservices mit Reinigung, Malerarbeiten, Dekoration, Gartenpflege und Instandhaltung."
         ),
         keywords: value(
           "SEO_KEYWORDS_DE",
-          "reinigungsfirma, hausreinigung, bueroreinigung, grundreinigung, auszugsreinigung"
+          "hausservice, reinigung, malerarbeiten, dekoration, gartenpflege, instandhaltung"
         )
       },
       ogImage: value("SEO_OG_IMAGE", ""),
+      ogImageType: value("SEO_OG_IMAGE_TYPE", "image/jpeg"),
+      ogImageWidth: parsePositiveInt("SEO_OG_IMAGE_WIDTH", 1200),
+      ogImageHeight: parsePositiveInt("SEO_OG_IMAGE_HEIGHT", 630),
+      robots: resolvedRobots(siteUrl),
+      twitterCard: value("SEO_TWITTER_CARD", "summary_large_image"),
       author: value("SEO_AUTHOR", value("COMPANY_NAME", "CleanMaster")),
-      twitterSite: value("SEO_TWITTER_SITE", "")
+      twitterSite: value("SEO_TWITTER_SITE", ""),
+      geoRegion: value("SEO_GEO_REGION", "DE-BE"),
+      geoPlacename: value("SEO_GEO_PLACENAME", value("ADDRESS_CITY", "Berlin"))
     },
     content: {
       en: buildLanguageBlock("en"),
@@ -456,17 +580,17 @@ function renderPage(config, forcedLang, pagePath = "/") {
   const text = config.content[lang];
   const seo = config.seo[lang];
   const assetVersion = encodeURIComponent(config.assetVersion || "1");
+  const siteBase = config.siteUrl.replace(/\/$/, "");
   const logoSrc = versionedAssetUrl(config.company.logoUrl, assetVersion);
   const heroBgSrc = versionedAssetUrl(config.assets.heroBackgroundImage, assetVersion);
-  const beforeSrc = versionedAssetUrl(config.assets.beforeImage, assetVersion);
-  const afterSrc = versionedAssetUrl(config.assets.afterImage, assetVersion);
   const normalizedPath = pagePath.endsWith("/") ? pagePath : `${pagePath}/`;
-  const canonical = `${config.siteUrl.replace(/\/$/, "")}${normalizedPath === "//" ? "/" : normalizedPath}`;
-  const enUrl = `${config.siteUrl.replace(/\/$/, "")}/en/`;
-  const deUrl = `${config.siteUrl.replace(/\/$/, "")}/de/`;
-  const xDefaultUrl = `${config.siteUrl.replace(/\/$/, "")}/`;
+  const canonical = `${siteBase}${normalizedPath === "//" ? "/" : normalizedPath}`;
+  const enUrl = `${siteBase}/en/`;
+  const deUrl = `${siteBase}/de/`;
+  const xDefaultUrl = `${siteBase}/`;
   const ogImage = config.seo.ogImage || config.assets.heroBackgroundImage;
   const ogImageAbsolute = absoluteUrl(config.siteUrl, ogImage);
+  const ogImageAlt = seo.ogImageAlt || `${config.company.name} services`;
   const ogLocale = seo.locale || (lang === "de" ? "de_DE" : "en_US");
   const alternateLocale = lang === "de" ? (config.seo.en.locale || "en_US") : (config.seo.de.locale || "de_DE");
   const reviewAverage = averageRating(text.reviews);
@@ -475,10 +599,47 @@ function renderPage(config, forcedLang, pagePath = "/") {
     (url) => url && url !== "#"
   );
 
+  const reviewSchemaEntries = text.reviews.slice(0, 6).map((review) => ({
+    "@type": "Review",
+    author: {
+      "@type": "Person",
+      name: review.name
+    },
+    reviewBody: review.text,
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: review.rating,
+      bestRating: 5,
+      worstRating: 1
+    }
+  }));
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${xDefaultUrl}#organization`,
+    name: config.company.name,
+    url: xDefaultUrl,
+    logo: absoluteUrl(config.siteUrl, config.company.logoUrl),
+    sameAs: socialProfiles,
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        telephone: config.company.phone,
+        email: config.company.email,
+        areaServed: text.serviceArea,
+        availableLanguage: ["en", "de"]
+      }
+    ]
+  };
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": `${canonical}#localbusiness`,
     name: config.company.name,
+    parentOrganization: { "@id": `${xDefaultUrl}#organization` },
     image: absoluteUrl(config.siteUrl, config.assets.heroBackgroundImage),
     logo: absoluteUrl(config.siteUrl, config.company.logoUrl),
     url: canonical,
@@ -493,7 +654,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
     sameAs: socialProfiles,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: lang === "de" ? "Reinigungsleistungen" : "Cleaning Services",
+      name: lang === "de" ? "Hausservices" : "Home Services",
       itemListElement: text.serviceCards.map((item) => ({
         "@type": "Offer",
         itemOffered: {
@@ -504,6 +665,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
       }))
     },
     areaServed: text.serviceCities,
+    review: reviewSchemaEntries,
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: reviewAverage,
@@ -537,14 +699,21 @@ function renderPage(config, forcedLang, pagePath = "/") {
     .join("");
 
   const initialServiceCards = text.serviceCards
-    .map(
-      (item, index) => `
-      <article class="service-card">
-        <img class="service-card-icon" src="${escapeHtml(iconFor("service", index))}" alt="" aria-hidden="true">
+    .map((item, index) => {
+      const backgroundSrc = versionedAssetUrl(serviceBackgroundFor(index), assetVersion);
+      const iconSrc = versionedAssetUrl(serviceIconFor(index, item.title), assetVersion);
+      const photoSrc = versionedAssetUrl(servicePhotoFor(index, item.title), assetVersion);
+      return `
+      <button class="service-card service-card-button" type="button" aria-haspopup="dialog"
+        data-service-title="${escapeHtml(item.title)}"
+        data-service-description="${escapeHtml(item.description)}"
+        style="--service-bg:url('${escapeHtml(backgroundSrc)}')">
+        <img class="service-card-icon" src="${escapeHtml(iconSrc)}" alt="" aria-hidden="true">
+        <img class="service-card-photo" src="${escapeHtml(photoSrc)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" width="900" height="600">
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
-      </article>`
-    )
+      </button>`;
+    })
     .join("");
 
   const initialTrustStats = text.trustStats
@@ -558,13 +727,19 @@ function renderPage(config, forcedLang, pagePath = "/") {
     .join("");
 
   const initialReviews = text.reviews
-    .slice(0, 3)
     .map(
       (review) => `
       <article class="testimonial-card">
-        <p class="testimonial-stars">${"&#9733;".repeat(review.rating)}${"&#9734;".repeat(5 - review.rating)}</p>
+        <div class="testimonial-head">
+          <img class="testimonial-avatar" src="${escapeHtml(versionedAssetUrl(review.image, assetVersion))}" alt="${escapeHtml(
+            review.name
+          )}" loading="lazy" decoding="async" width="56" height="56">
+          <div>
+            <p class="testimonial-name">${escapeHtml(review.name)}</p>
+            <p class="testimonial-stars">${"&#9733;".repeat(review.rating)}${"&#9734;".repeat(5 - review.rating)}</p>
+          </div>
+        </div>
         <p class="testimonial-text">"${escapeHtml(review.text)}"</p>
-        <p class="testimonial-name">${escapeHtml(review.name)}</p>
       </article>`
     )
     .join("");
@@ -573,7 +748,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
     .map((city) => `<li class="city-chip">${escapeHtml(city)}</li>`)
     .join("");
 
-  const initialCleaningOptions = text.cleaningTypes
+  const initialServiceOptions = text.serviceTypes
     .map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`)
     .join("");
 
@@ -598,13 +773,20 @@ function renderPage(config, forcedLang, pagePath = "/") {
     <meta id="meta-description" name="description" content="${escapeHtml(seo.description)}">
     <meta id="meta-keywords" name="keywords" content="${escapeHtml(seo.keywords)}">
     <meta name="author" content="${escapeHtml(config.seo.author)}">
+    <meta name="application-name" content="${escapeHtml(config.company.name)}">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=yes">
     <meta name="theme-color" content="#0c7a8b">
-    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="robots" content="${escapeHtml(config.seo.robots)}">
+    <meta name="googlebot" content="${escapeHtml(config.seo.robots)}">
+    <meta name="bingbot" content="${escapeHtml(config.seo.robots)}">
+    <meta name="geo.region" content="${escapeHtml(config.seo.geoRegion)}">
+    <meta name="geo.placename" content="${escapeHtml(config.seo.geoPlacename)}">
     <link rel="canonical" href="${escapeHtml(canonical)}">
     <link rel="alternate" hreflang="de" href="${escapeHtml(deUrl)}">
     <link rel="alternate" hreflang="en" href="${escapeHtml(enUrl)}">
     <link rel="alternate" hreflang="x-default" href="${escapeHtml(xDefaultUrl)}">
+    <link rel="icon" href="${escapeHtml(logoSrc)}">
 
     <meta id="og-title" property="og:title" content="${escapeHtml(seo.title)}">
     <meta id="og-description" property="og:description" content="${escapeHtml(seo.description)}">
@@ -614,11 +796,17 @@ function renderPage(config, forcedLang, pagePath = "/") {
     <meta property="og:type" content="website">
     <meta property="og:url" content="${escapeHtml(canonical)}">
     <meta property="og:image" content="${escapeHtml(ogImageAbsolute)}">
+    <meta property="og:image:secure_url" content="${escapeHtml(ogImageAbsolute)}">
+    <meta property="og:image:type" content="${escapeHtml(config.seo.ogImageType)}">
+    <meta property="og:image:width" content="${escapeHtml(config.seo.ogImageWidth)}">
+    <meta property="og:image:height" content="${escapeHtml(config.seo.ogImageHeight)}">
+    <meta property="og:image:alt" content="${escapeHtml(ogImageAlt)}">
 
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="${escapeHtml(config.seo.twitterCard)}">
     <meta id="twitter-title" name="twitter:title" content="${escapeHtml(seo.title)}">
     <meta id="twitter-description" name="twitter:description" content="${escapeHtml(seo.description)}">
     <meta name="twitter:image" content="${escapeHtml(ogImageAbsolute)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(ogImageAlt)}">
     ${config.seo.twitterSite ? `<meta name="twitter:site" content="${escapeHtml(config.seo.twitterSite)}">` : ""}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -627,6 +815,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/index.css?v=${assetVersion}">
 
+    <script type="application/ld+json">${safeJson(organizationSchema)}</script>
     <script type="application/ld+json">${safeJson(localBusinessSchema)}</script>
     <script type="application/ld+json">${safeJson(websiteSchema)}</script>
     <script type="application/ld+json">${safeJson(faqSchema)}</script>
@@ -690,24 +879,14 @@ function renderPage(config, forcedLang, pagePath = "/") {
           <h2 id="reviews-title">${escapeHtml(text.reviewsTitle)}</h2>
           <p id="reviews-subtitle">${escapeHtml(text.reviewsSubtitle)}</p>
         </div>
-        <div id="reviews-grid" class="testimonials-grid">${initialReviews}</div>
-      </section>
-
-      <section class="section container before-after-section">
-        <div class="section-heading">
-          <h2 id="before-after-title">${escapeHtml(text.beforeAfterTitle)}</h2>
-          <p id="before-after-subtitle">${escapeHtml(text.beforeAfterSubtitle)}</p>
+        <div class="reviews-slider" id="reviews-slider" style="--cards-per-view:1">
+          <button id="reviews-prev" class="reviews-nav-btn" type="button" aria-label="Previous review">&#8249;</button>
+          <div class="reviews-viewport">
+            <div id="reviews-grid" class="testimonials-grid">${initialReviews}</div>
+          </div>
+          <button id="reviews-next" class="reviews-nav-btn" type="button" aria-label="Next review">&#8250;</button>
         </div>
-        <div class="before-after-grid">
-          <figure class="compare-card">
-            <img src="${escapeHtml(beforeSrc)}" alt="${escapeHtml(text.beforeLabel)} cleaning result placeholder" loading="lazy">
-            <figcaption id="before-label">${escapeHtml(text.beforeLabel)}</figcaption>
-          </figure>
-          <figure class="compare-card">
-            <img src="${escapeHtml(afterSrc)}" alt="${escapeHtml(text.afterLabel)} cleaning result placeholder" loading="lazy">
-            <figcaption id="after-label">${escapeHtml(text.afterLabel)}</figcaption>
-          </figure>
-        </div>
+        <div id="reviews-dots" class="reviews-dots" aria-label="Review slides"></div>
       </section>
 
       <section class="section container service-area-section">
@@ -742,8 +921,8 @@ function renderPage(config, forcedLang, pagePath = "/") {
             <label for="address" id="form-address-label">${escapeHtml(text.formAddressLabel)}</label>
             <input id="address" name="address" type="text" required autocomplete="street-address">
 
-            <label for="cleaning-type" id="form-cleaning-type-label">${escapeHtml(text.formCleaningTypeLabel)}</label>
-            <select id="cleaning-type" name="cleaning_type" required>${initialCleaningOptions}</select>
+            <label for="service-type" id="form-service-type-label">${escapeHtml(text.formServiceTypeLabel)}</label>
+            <select id="service-type" name="service_type" required>${initialServiceOptions}</select>
 
             <label for="message" id="form-message-label">${escapeHtml(text.formMessageLabel)}</label>
             <textarea id="message" name="message" rows="4"></textarea>
@@ -811,6 +990,19 @@ function renderPage(config, forcedLang, pagePath = "/") {
       </div>
     </footer>
 
+    <div id="service-modal" class="service-modal" hidden aria-hidden="true">
+      <div id="service-modal-backdrop" class="service-modal-backdrop"></div>
+      <div class="service-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="service-modal-title" aria-describedby="service-modal-description">
+        <button id="service-modal-close-btn" class="service-modal-close" type="button" aria-label="${escapeHtml(text.serviceModalClose)}">
+          <span aria-hidden="true">&times;</span>
+          <span id="service-modal-close-text">${escapeHtml(text.serviceModalClose)}</span>
+        </button>
+        <p id="service-modal-label" class="service-modal-label">${escapeHtml(text.serviceModalLabel)}</p>
+        <h3 id="service-modal-title" class="service-modal-title"></h3>
+        <p id="service-modal-description"></p>
+      </div>
+    </div>
+
     <a id="whatsapp-float" class="whatsapp-float" href="https://wa.me/${config.company.whatsappNumber}?text=${encodeURIComponent(text.whatsappMessage)}" target="_blank" rel="noopener noreferrer">
       <img src="/public/icon-whatsapp.svg?v=${assetVersion}" alt="" aria-hidden="true">
       <span>WhatsApp</span>
@@ -823,12 +1015,16 @@ function renderPage(config, forcedLang, pagePath = "/") {
 }
 
 function renderRobotsTxt() {
-  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
+  const siteUrl = normalizedSiteUrl();
+  const robots = resolvedRobots(siteUrl);
+  if (shouldBlockCrawlers(robots)) {
+    return "User-agent: *\nDisallow: /\n";
+  }
   return `User-agent: *\nAllow: /\nHost: ${siteUrl}\nSitemap: ${siteUrl}/sitemap.xml\n`;
 }
 
 function renderSitemapXml() {
-  const siteUrl = value("SITE_URL", "https://www.cleanmaster.example").replace(/\/$/, "");
+  const siteUrl = normalizedSiteUrl();
   const now = new Date().toISOString().slice(0, 10);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

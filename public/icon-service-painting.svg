@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Painting icon">
+  <rect x="8" y="14" width="38" height="18" rx="6" fill="#1f83d7"/>
+  <rect x="26" y="32" width="8" height="20" rx="3" fill="#1668ad"/>
+  <rect x="20" y="50" width="20" height="8" rx="3" fill="#1668ad"/>
+  <path d="M44 16h10a4 4 0 0 1 4 4v6H44z" fill="#5eb2f4"/>
+  <circle cx="14" cy="23" r="2" fill="#eaf5ff"/>
+</svg>
