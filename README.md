@@ -53,6 +53,7 @@ Edit `.env` to change all business/content values:
 - Hero conversion: `CTA_QUOTE_*`, `CTA_CALL_*`, `HERO_BADGES_*` (use `|`).
 - Service cards: `SERVICE_CARDS_*` using `Title||Description` with `;;` separator.
 - Service card popup labels: `SERVICE_MODAL_LABEL_*`, `SERVICE_MODAL_CLOSE_*`.
+- Service popup details: `SERVICE_DETAILS_*` using `;;` separator (one detailed text per service card, same order).
 - Trust section: `TRUST_TITLE_*`, `TRUST_SUBTITLE_*`, `TRUST_STATS_*` using `Value||Label` with `;;`.
 - Service area list: `SERVICE_AREA_TITLE_*`, `SERVICE_AREA_SUBTITLE_*`, `SERVICE_CITIES_*` (use `|`).
 - Quote form labels/types: `FORM_*`, `SERVICE_TYPES_*` (use `|`).

@@ -18,6 +18,7 @@
     servicesGrid: document.getElementById("services-grid"),
     serviceModal: document.getElementById("service-modal"),
     serviceModalBackdrop: document.getElementById("service-modal-backdrop"),
+    serviceModalIcon: document.getElementById("service-modal-icon"),
     serviceModalTitle: document.getElementById("service-modal-title"),
     serviceModalDescription: document.getElementById("service-modal-description"),
     serviceModalLabel: document.getElementById("service-modal-label"),
@@ -221,7 +222,7 @@
     });
   }
 
-  function renderServices(cards) {
+  function renderServices(cards, details) {
     elements.servicesGrid.innerHTML = "";
     cards.forEach((cardData, index) => {
       const card = document.createElement("button");
@@ -230,6 +231,8 @@
       card.setAttribute("aria-haspopup", "dialog");
       card.dataset.serviceTitle = cardData.title;
       card.dataset.serviceDescription = cardData.description;
+      card.dataset.serviceDetail = details[index] || cardData.description;
+      card.dataset.serviceIcon = serviceIconFor(index, cardData.title);
       card.style.setProperty("--service-bg", `url("${serviceBackgroundFor(index)}")`);
 
       const photo = document.createElement("img");
@@ -241,19 +244,12 @@
       photo.width = 900;
       photo.height = 600;
 
-      const icon = document.createElement("img");
-      icon.className = "service-card-icon";
-      icon.src = serviceIconFor(index, cardData.title);
-      icon.alt = "";
-      icon.setAttribute("aria-hidden", "true");
-
       const title = document.createElement("h3");
       title.textContent = cardData.title;
 
       const desc = document.createElement("p");
       desc.textContent = cardData.description;
 
-      card.appendChild(icon);
       card.appendChild(photo);
       card.appendChild(title);
       card.appendChild(desc);
@@ -261,11 +257,15 @@
     });
   }
 
-  function openServiceModal(title, description, triggerElement) {
+  function openServiceModal(title, description, iconSrc, triggerElement) {
     if (!elements.serviceModal || !elements.serviceModalTitle || !elements.serviceModalDescription) {
       return;
     }
     lastFocusedServiceCard = triggerElement instanceof HTMLElement ? triggerElement : null;
+    if (elements.serviceModalIcon) {
+      elements.serviceModalIcon.src = iconSrc || "";
+      elements.serviceModalIcon.hidden = !iconSrc;
+    }
     elements.serviceModalTitle.textContent = title;
     elements.serviceModalDescription.textContent = description;
     elements.serviceModal.hidden = false;
@@ -303,8 +303,9 @@
         return;
       }
       const title = card.dataset.serviceTitle || card.querySelector("h3")?.textContent || "";
-      const description = card.dataset.serviceDescription || card.querySelector("p")?.textContent || "";
-      openServiceModal(title, description, card);
+      const description = card.dataset.serviceDetail || card.dataset.serviceDescription || card.querySelector("p")?.textContent || "";
+      const iconSrc = card.dataset.serviceIcon || "";
+      openServiceModal(title, description, iconSrc, card);
     });
 
     if (elements.serviceModalCloseBtn) {
@@ -619,7 +620,7 @@
     elements.whatsappFloat.href = buildWhatsappLink(lang);
 
     renderHeroBadges(content.heroBadges);
-    renderServices(content.serviceCards);
+    renderServices(content.serviceCards, content.serviceDetails || []);
     renderTrustStats(content.trustStats);
     renderReviews(content.reviews);
     renderCities(content.serviceCities);

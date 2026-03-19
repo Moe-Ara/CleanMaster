@@ -65,6 +65,22 @@ const fallbackServiceCardsDe = [
   { title: "Objektpflege & Instandhaltung", description: "Einzugs-/Auszugsvorbereitung, kleine Reparaturen und laufende Pflege." }
 ];
 
+const fallbackServiceDetailsEn = [
+  "Our cleaning plans are adapted to your property size, priorities, and preferred frequency. We use professional checklists, quality-safe products, and detail-focused methods for kitchens, bathrooms, floors, and high-touch surfaces. You receive clear scope, reliable arrival windows, and consistent results.",
+  "We handle interior and exterior painting with proper prep, surface repair, clean edging, and durable finishes. We protect furniture and floors, keep the site tidy, and complete each project with a final quality walk-through so the result looks polished and lasts longer.",
+  "Our decor service helps you refresh rooms with better layout, styling, color coordination, and practical finishing touches. We combine functionality and aesthetics so your space feels cleaner, more organized, and more welcoming for everyday living or client-facing use.",
+  "From regular maintenance to seasonal cleanup, we cover lawn and plant care, trimming, pruning, and outdoor tidying. Work is planned around weather and season, with a focus on healthy growth, curb appeal, and low-maintenance upkeep for your property.",
+  "We support move-in/move-out preparation, light repairs, touch-ups, and practical upkeep tasks that keep your home or commercial unit in excellent condition. The goal is simple: one reliable team that helps you avoid delays, stress, and unfinished jobs."
+];
+
+const fallbackServiceDetailsDe = [
+  "Unsere Reinigungsleistungen werden auf Flaeche, Prioritaeten und gewuenschte Intervalle abgestimmt. Mit professionellen Checklisten, sicheren Produkten und hoher Detailgenauigkeit reinigen wir Kueche, Bad, Boeden und Kontaktflaechen gruendlich und zuverlaessig. Sie erhalten klare Leistungen, feste Zeitfenster und konstant saubere Ergebnisse.",
+  "Wir uebernehmen Innen- und Aussenanstriche inklusive Vorbereitung, Ausbesserung, sauberer Abklebung und langlebigem Finish. Moebel und Boeden werden geschuetzt, der Arbeitsbereich bleibt ordentlich, und am Ende erfolgt eine gemeinsame Qualitaetskontrolle fuer ein hochwertiges, dauerhaftes Ergebnis.",
+  "Unser Dekorationsservice verbessert Raumwirkung und Nutzung durch durchdachte Anordnung, passende Farben und stilvolle Details. So entsteht ein stimmiges Gesamtbild, das sowohl im Alltag als auch bei Besuchen professionell, gepflegt und einladend wirkt.",
+  "Von laufender Gartenpflege bis zur saisonalen Aufraeumung uebernehmen wir Rueckschnitt, Pflegearbeiten und Ordnung im Aussenbereich. Die Massnahmen werden wetter- und saisongerecht geplant, damit Ihr Garten gesund, ansprechend und pflegeleicht bleibt.",
+  "Wir kuemmern uns um Einzugs- und Auszugsvorbereitung, kleine Reparaturen, Nachbesserungen und allgemeine Objektpflege. Ziel ist ein zuverlaessiger Rundum-Service aus einer Hand, damit keine Aufgaben liegen bleiben und Ihre Immobilie jederzeit in gutem Zustand ist."
+];
+
 const fallbackTrustStatsEn = [
   { value: "10+", label: "Years of Experience" },
   { value: "2,500+", label: "Projects Completed" },
@@ -112,9 +128,25 @@ const fallbackFaqsDe = [
 function value(name, fallbackValue) {
   const envValue = process.env[name];
   if (typeof envValue === "string" && envValue.trim().length > 0) {
-    return envValue.trim();
+    return normalizeMojibake(envValue.trim());
   }
-  return fallbackValue;
+  return normalizeMojibake(String(fallbackValue));
+}
+
+function normalizeMojibake(input) {
+  const text = String(input || "");
+  if (!/[ÃÂ]/.test(text)) {
+    return text;
+  }
+
+  return text
+    .replace(/Ã„/g, "Ä")
+    .replace(/Ã–/g, "Ö")
+    .replace(/Ãœ/g, "Ü")
+    .replace(/Ã¤/g, "ä")
+    .replace(/Ã¶/g, "ö")
+    .replace(/Ã¼/g, "ü")
+    .replace(/ÃŸ/g, "ß");
 }
 
 function parsePositiveInt(name, fallbackValue) {
@@ -180,6 +212,20 @@ function parseStatsList(name, fallbackList) {
     .filter((item) => item.value && item.label);
 
   return stats.length ? stats : fallbackList;
+}
+
+function parseDoubleSemicolonList(name, fallbackList) {
+  const raw = value(name, "");
+  if (!raw) {
+    return fallbackList;
+  }
+
+  const list = raw
+    .split(";;")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return list.length ? list : fallbackList;
 }
 
 function parseFaqList(name, fallbackList) {
@@ -423,6 +469,10 @@ function buildLanguageBlock(lang) {
     serviceModalLabel: value(`SERVICE_MODAL_LABEL_${suffix}`, isEnglish ? "About this service" : "Über diesen Service"),
     serviceModalClose: value(`SERVICE_MODAL_CLOSE_${suffix}`, isEnglish ? "Close" : "Schließen"),
     serviceCards: parseCardList(`SERVICE_CARDS_${suffix}`, isEnglish ? fallbackServiceCardsEn : fallbackServiceCardsDe),
+    serviceDetails: parseDoubleSemicolonList(
+      `SERVICE_DETAILS_${suffix}`,
+      isEnglish ? fallbackServiceDetailsEn : fallbackServiceDetailsDe
+    ),
 
     trustTitle: value(`TRUST_TITLE_${suffix}`, isEnglish ? "Trusted By Homeowners Across The Area" : "Vertrauen Von Haushalten In Der Region"),
     trustSubtitle: value(
@@ -703,12 +753,14 @@ function renderPage(config, forcedLang, pagePath = "/") {
       const backgroundSrc = versionedAssetUrl(serviceBackgroundFor(index), assetVersion);
       const iconSrc = versionedAssetUrl(serviceIconFor(index, item.title), assetVersion);
       const photoSrc = versionedAssetUrl(servicePhotoFor(index, item.title), assetVersion);
+      const detailText = text.serviceDetails[index] || item.description;
       return `
       <button class="service-card service-card-button" type="button" aria-haspopup="dialog"
         data-service-title="${escapeHtml(item.title)}"
         data-service-description="${escapeHtml(item.description)}"
+        data-service-detail="${escapeHtml(detailText)}"
+        data-service-icon="${escapeHtml(iconSrc)}"
         style="--service-bg:url('${escapeHtml(backgroundSrc)}')">
-        <img class="service-card-icon" src="${escapeHtml(iconSrc)}" alt="" aria-hidden="true">
         <img class="service-card-photo" src="${escapeHtml(photoSrc)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" width="900" height="600">
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
@@ -997,6 +1049,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
           <span aria-hidden="true">&times;</span>
           <span id="service-modal-close-text">${escapeHtml(text.serviceModalClose)}</span>
         </button>
+        <img id="service-modal-icon" class="service-modal-icon" src="/public/icon-service-cleaning.svg?v=${assetVersion}" alt="" aria-hidden="true" hidden>
         <p id="service-modal-label" class="service-modal-label">${escapeHtml(text.serviceModalLabel)}</p>
         <h3 id="service-modal-title" class="service-modal-title"></h3>
         <p id="service-modal-description"></p>

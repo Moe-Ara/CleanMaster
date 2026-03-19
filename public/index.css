@@ -335,15 +335,6 @@ h1 {
   border: 1px solid #d4e6f2;
 }
 
-.service-card-icon {
-  width: 28px;
-  height: 28px;
-  padding: 0.32rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid #d4e6f2;
-}
-
 .service-card h3 {
   margin: 0.5rem 0 0.25rem;
   font-size: 1.03rem;
@@ -667,6 +658,16 @@ body.modal-open {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.8rem;
+}
+
+.service-modal-icon {
+  width: 42px;
+  height: 42px;
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1px solid #cde0ee;
+  background: #f4fbff;
+  margin-bottom: 0.55rem;
 }
 
 .service-modal-title {
