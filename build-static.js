@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { buildConfig, renderPage, renderRobotsTxt, renderSitemapXml } = require("./server");
+const { buildConfig, renderPage, renderLegalPage, renderRobotsTxt, renderSitemapXml } = require("./server");
 
 const projectRoot = __dirname;
 const distDir = path.join(projectRoot, "dist");
@@ -28,6 +28,10 @@ function build() {
   writeTextFile(path.join(distDir, "index.html"), renderPage(config, config.defaultLanguage, "/"));
   writeTextFile(path.join(distDir, "en", "index.html"), renderPage(config, "en", "/en/"));
   writeTextFile(path.join(distDir, "de", "index.html"), renderPage(config, "de", "/de/"));
+  writeTextFile(path.join(distDir, "impressum", "index.html"), renderLegalPage(config, "de", "impressum", "/impressum/"));
+  writeTextFile(path.join(distDir, "datenschutz", "index.html"), renderLegalPage(config, "de", "datenschutz", "/datenschutz/"));
+  writeTextFile(path.join(distDir, "en", "impressum", "index.html"), renderLegalPage(config, "en", "impressum", "/en/impressum/"));
+  writeTextFile(path.join(distDir, "en", "datenschutz", "index.html"), renderLegalPage(config, "en", "datenschutz", "/en/datenschutz/"));
   writeTextFile(path.join(distDir, "robots.txt"), renderRobotsTxt());
   writeTextFile(path.join(distDir, "sitemap.xml"), renderSitemapXml());
 

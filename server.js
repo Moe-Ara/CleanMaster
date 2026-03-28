@@ -7,14 +7,6 @@ dotenv.config();
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
-const serviceIconFallbacks = [
-  "/public/icon-service-cleaning.svg",
-  "/public/icon-service-painting.svg",
-  "/public/icon-service-decor.svg",
-  "/public/icon-service-gardening.svg",
-  "/public/icon-service-maintenance.svg"
-];
-
 const serviceBackgroundPaths = [
   "/public/service-bg-cleaning.svg",
   "/public/service-bg-painting.svg",
@@ -41,11 +33,11 @@ const fallbackReviewsEn = [
 ];
 
 const fallbackReviewsDe = [
-  { name: "Anna B.", text: "Sehr zuverlaessig und gruendlich.", rating: 5 },
-  { name: "Markus W.", text: "Top Service fuer unser Buero.", rating: 5 },
+  { name: "Anna B.", text: "Sehr zuverlässig und gründlich.", rating: 5 },
+  { name: "Markus W.", text: "Top Service für unser Büro.", rating: 5 },
   { name: "Julia H.", text: "Professionell, schnell und freundlich.", rating: 5 },
   { name: "Sophie T.", text: "Malerarbeiten und Reinigung waren einwandfrei.", rating: 5 },
-  { name: "Lukas P.", text: "Sehr gute Gartenpflege und puenktliches Team.", rating: 4 },
+  { name: "Lukas P.", text: "Sehr gute Gartenpflege und pünktliches Team.", rating: 4 },
   { name: "Mila L.", text: "Schnelles Angebot, klare Kommunikation, top Ergebnis.", rating: 5 }
 ];
 
@@ -58,10 +50,10 @@ const fallbackServiceCardsEn = [
 ];
 
 const fallbackServiceCardsDe = [
-  { title: "Reinigungsservice", description: "Regelmaessige und gruendliche Reinigung fuer Wohn- und Gewerbeobjekte." },
-  { title: "Malerarbeiten", description: "Innen- und Aussenanstrich mit sauberer Vorbereitung und hochwertigem Ergebnis." },
-  { title: "Dekoration & Styling", description: "Raumaufwertung, Einrichtungshilfe und stilvolle Details fuer ein gepflegtes Gesamtbild." },
-  { title: "Gartenservice", description: "Pflege, Rueckschnitt, Aufraeumen und saisonale Gartenarbeiten." },
+  { title: "Reinigungsservice", description: "Regelmäßige und gründliche Reinigung für Wohn- und Gewerbeobjekte." },
+  { title: "Malerarbeiten", description: "Innen- und Außenanstrich mit sauberer Vorbereitung und hochwertigem Ergebnis." },
+  { title: "Dekoration & Styling", description: "Raumaufwertung, Einrichtungshilfe und stilvolle Details für ein gepflegtes Gesamtbild." },
+  { title: "Gartenservice", description: "Pflege, Rückschnitt, Aufräumen und saisonale Gartenarbeiten." },
   { title: "Objektpflege & Instandhaltung", description: "Einzugs-/Auszugsvorbereitung, kleine Reparaturen und laufende Pflege." }
 ];
 
@@ -74,11 +66,11 @@ const fallbackServiceDetailsEn = [
 ];
 
 const fallbackServiceDetailsDe = [
-  "Unsere Reinigungsleistungen werden auf Flaeche, Prioritaeten und gewuenschte Intervalle abgestimmt. Mit professionellen Checklisten, sicheren Produkten und hoher Detailgenauigkeit reinigen wir Kueche, Bad, Boeden und Kontaktflaechen gruendlich und zuverlaessig. Sie erhalten klare Leistungen, feste Zeitfenster und konstant saubere Ergebnisse.",
-  "Wir uebernehmen Innen- und Aussenanstriche inklusive Vorbereitung, Ausbesserung, sauberer Abklebung und langlebigem Finish. Moebel und Boeden werden geschuetzt, der Arbeitsbereich bleibt ordentlich, und am Ende erfolgt eine gemeinsame Qualitaetskontrolle fuer ein hochwertiges, dauerhaftes Ergebnis.",
+  "Unsere Reinigungsleistungen werden auf Fläche, Prioritäten und gewünschte Intervalle abgestimmt. Mit professionellen Checklisten, sicheren Produkten und hoher Detailgenauigkeit reinigen wir Küche, Bad, Böden und Kontaktflächen gründlich und zuverlässig. Sie erhalten klare Leistungen, feste Zeitfenster und konstant saubere Ergebnisse.",
+  "Wir übernehmen Innen- und Außenanstriche inklusive Vorbereitung, Ausbesserung, sauberer Abklebung und langlebigem Finish. Möbel und Böden werden geschützt, der Arbeitsbereich bleibt ordentlich, und am Ende erfolgt eine gemeinsame Qualitätskontrolle für ein hochwertiges, dauerhaftes Ergebnis.",
   "Unser Dekorationsservice verbessert Raumwirkung und Nutzung durch durchdachte Anordnung, passende Farben und stilvolle Details. So entsteht ein stimmiges Gesamtbild, das sowohl im Alltag als auch bei Besuchen professionell, gepflegt und einladend wirkt.",
-  "Von laufender Gartenpflege bis zur saisonalen Aufraeumung uebernehmen wir Rueckschnitt, Pflegearbeiten und Ordnung im Aussenbereich. Die Massnahmen werden wetter- und saisongerecht geplant, damit Ihr Garten gesund, ansprechend und pflegeleicht bleibt.",
-  "Wir kuemmern uns um Einzugs- und Auszugsvorbereitung, kleine Reparaturen, Nachbesserungen und allgemeine Objektpflege. Ziel ist ein zuverlaessiger Rundum-Service aus einer Hand, damit keine Aufgaben liegen bleiben und Ihre Immobilie jederzeit in gutem Zustand ist."
+  "Von laufender Gartenpflege bis zur saisonalen Aufräumung übernehmen wir Rückschnitt, Pflegearbeiten und Ordnung im Außenbereich. Die Maßnahmen werden wetter- und saisongerecht geplant, damit Ihr Garten gesund, ansprechend und pflegeleicht bleibt.",
+  "Wir kümmern uns um Einzugs- und Auszugsvorbereitung, kleine Reparaturen, Nachbesserungen und allgemeine Objektpflege. Ziel ist ein zuverlässiger Rundum-Service aus einer Hand, damit keine Aufgaben liegen bleiben und Ihre Immobilie jederzeit in gutem Zustand ist."
 ];
 
 const fallbackTrustStatsEn = [
@@ -92,7 +84,7 @@ const fallbackTrustStatsDe = [
   { value: "10+", label: "Jahre Erfahrung" },
   { value: "2.500+", label: "Abgeschlossene Projekte" },
   { value: "100%", label: "Zufriedenheitsgarantie" },
-  { value: "Voll", label: "Versichert & Zuverlaessig" }
+  { value: "Voll", label: "Versichert & Zuverlässig" }
 ];
 
 const fallbackFaqsEn = [
@@ -121,7 +113,7 @@ const fallbackFaqsDe = [
   },
   {
     question: "Ist Ihr Team versichert?",
-    answer: "Ja, unser Team ist voll versichert und geprueft."
+    answer: "Ja, unser Team ist voll versichert und geprüft."
   }
 ];
 
@@ -369,36 +361,6 @@ function averageRating(reviews) {
   return Number((sum / reviews.length).toFixed(1));
 }
 
-function serviceIconFor(index, title) {
-  const normalized = String(title || "").toLowerCase();
-  if (normalized.includes("paint") || normalized.includes("maler")) {
-    return "/public/icon-service-painting.svg";
-  }
-  if (
-    normalized.includes("decor") ||
-    normalized.includes("dekor") ||
-    normalized.includes("styling") ||
-    normalized.includes("design")
-  ) {
-    return "/public/icon-service-decor.svg";
-  }
-  if (normalized.includes("garden") || normalized.includes("garten")) {
-    return "/public/icon-service-gardening.svg";
-  }
-  if (
-    normalized.includes("maintenance") ||
-    normalized.includes("objekt") ||
-    normalized.includes("instand") ||
-    normalized.includes("repair")
-  ) {
-    return "/public/icon-service-maintenance.svg";
-  }
-  if (normalized.includes("clean") || normalized.includes("reinig")) {
-    return "/public/icon-service-cleaning.svg";
-  }
-  return serviceIconFallbacks[index % serviceIconFallbacks.length];
-}
-
 function serviceBackgroundFor(index) {
   if (!serviceBackgroundPaths.length) {
     return "";
@@ -444,13 +406,13 @@ function buildLanguageBlock(lang) {
     heroEyebrow: value(`HERO_EYEBROW_${suffix}`, isEnglish ? "Trusted Local Home Service Team" : "Ihr Lokales Hausservice-Team"),
     heroTitle: value(
       `HERO_TITLE_${suffix}`,
-      isEnglish ? "One Team For Cleaning, Painting, Decor, Gardening And More" : "Ein Team Fuer Reinigung, Malerarbeiten, Deko, Garten Und Mehr"
+      isEnglish ? "One Team For Cleaning, Painting, Decor, Gardening And More" : "Ein Team Für Reinigung, Malerarbeiten, Deko, Garten Und Mehr"
     ),
     heroSubtitle: value(
       `HERO_SUBTITLE_${suffix}`,
       isEnglish
         ? "Reliable home and property services with transparent pricing and professional results."
-        : "Zuverlaessige Haus- und Objektservices mit transparenten Preisen und professionellen Ergebnissen."
+        : "Zuverlässige Haus- und Objektservices mit transparenten Preisen und professionellen Ergebnissen."
     ),
     ctaQuote: value(`CTA_QUOTE_${suffix}`, isEnglish ? "Get a Free Quote" : "Kostenloses Angebot"),
     ctaCall: value(`CTA_CALL_${suffix}`, isEnglish ? "Call Now" : "Jetzt Anrufen"),
@@ -477,7 +439,7 @@ function buildLanguageBlock(lang) {
     trustTitle: value(`TRUST_TITLE_${suffix}`, isEnglish ? "Trusted By Homeowners Across The Area" : "Vertrauen Von Haushalten In Der Region"),
     trustSubtitle: value(
       `TRUST_SUBTITLE_${suffix}`,
-      isEnglish ? "Proof that your property is in safe and experienced hands." : "Belege dafuer, dass Ihr Zuhause in sicheren und erfahrenen Haenden ist."
+      isEnglish ? "Proof that your property is in safe and experienced hands." : "Belege dafür, dass Ihr Zuhause in sicheren und erfahrenen Händen ist."
     ),
     trustStats: parseStatsList(`TRUST_STATS_${suffix}`, isEnglish ? fallbackTrustStatsEn : fallbackTrustStatsDe),
 
@@ -491,14 +453,14 @@ function buildLanguageBlock(lang) {
     serviceAreaTitle: value(`SERVICE_AREA_TITLE_${suffix}`, isEnglish ? "Service Area" : "Einsatzgebiet"),
     serviceAreaSubtitle: value(
       `SERVICE_AREA_SUBTITLE_${suffix}`,
-      isEnglish ? "We proudly serve these cities and nearby neighborhoods." : "Wir bedienen diese Staedte und umliegenden Gebiete."
+      isEnglish ? "We proudly serve these cities and nearby neighborhoods." : "Wir bedienen diese Städte und umliegenden Gebiete."
     ),
     serviceCities: parsePipeList(
       `SERVICE_CITIES_${suffix}`,
       isEnglish ? ["Berlin", "Potsdam", "Charlottenburg", "Mitte", "Prenzlauer Berg"] : ["Berlin", "Potsdam", "Charlottenburg", "Mitte", "Prenzlauer Berg"]
     ),
 
-    faqTitle: value(`FAQ_TITLE_${suffix}`, isEnglish ? "Frequently Asked Questions" : "Haeufige Fragen"),
+    faqTitle: value(`FAQ_TITLE_${suffix}`, isEnglish ? "Frequently Asked Questions" : "Häufige Fragen"),
     faqItems: parseFaqList(`FAQS_${suffix}`, isEnglish ? fallbackFaqsEn : fallbackFaqsDe),
 
     formTitle: value(`FORM_TITLE_${suffix}`, isEnglish ? "Request Your Free Quote" : "Kostenloses Angebot Anfordern"),
@@ -526,30 +488,33 @@ function buildLanguageBlock(lang) {
       )
     ),
 
-    finalCtaTitle: value(`FINAL_CTA_TITLE_${suffix}`, isEnglish ? "Ready to Upgrade Your Home?" : "Bereit Fuer Ein Gepflegtes Zuhause?"),
+    finalCtaTitle: value(`FINAL_CTA_TITLE_${suffix}`, isEnglish ? "Ready to Upgrade Your Home?" : "Bereit Für Ein Gepflegtes Zuhause?"),
     finalCtaSubtitle: value(
       `FINAL_CTA_SUBTITLE_${suffix}`,
       isEnglish
         ? "Book your service today and enjoy a cleaner, better-maintained property."
-        : "Buchen Sie noch heute Ihren Service und geniessen Sie mehr freie Zeit."
+        : "Buchen Sie noch heute Ihren Service und genießen Sie mehr freie Zeit."
     ),
     finalCtaQuote: value(`FINAL_CTA_QUOTE_${suffix}`, isEnglish ? "Get Free Quote" : "Kostenloses Angebot"),
     finalCtaCall: value(`FINAL_CTA_CALL_${suffix}`, isEnglish ? "Call Now" : "Jetzt Anrufen"),
 
     footerTagline: value(
       `FOOTER_TAGLINE_${suffix}`,
-      isEnglish ? "Well-kept spaces. Reliable service. Professional standards." : "Gepflegte Raeume. Zuverlaessiger Service. Professionelle Standards."
+      isEnglish ? "Well-kept spaces. Reliable service. Professional standards." : "Gepflegte Räume. Zuverlässiger Service. Professionelle Standards."
     ),
     footerContactLabel: value(`FOOTER_CONTACT_LABEL_${suffix}`, isEnglish ? "Contact" : "Kontakt"),
-    footerHoursLabel: value(`FOOTER_HOURS_LABEL_${suffix}`, isEnglish ? "Business Hours" : "Oeffnungszeiten"),
+    footerHoursLabel: value(`FOOTER_HOURS_LABEL_${suffix}`, isEnglish ? "Business Hours" : "Öffnungszeiten"),
     footerServiceAreaLabel: value(`FOOTER_SERVICE_AREA_LABEL_${suffix}`, isEnglish ? "Service Area" : "Einsatzgebiet"),
     footerSocialLabel: value(`FOOTER_SOCIAL_LABEL_${suffix}`, isEnglish ? "Follow Us" : "Folgen Sie Uns"),
+    footerLegalLabel: value(`FOOTER_LEGAL_LABEL_${suffix}`, isEnglish ? "Legal" : "Rechtliches"),
+    footerImpressumLabel: value(`FOOTER_IMPRESSUM_LABEL_${suffix}`, isEnglish ? "Imprint" : "Impressum"),
+    footerPrivacyLabel: value(`FOOTER_PRIVACY_LABEL_${suffix}`, isEnglish ? "Privacy Policy" : "Datenschutz"),
 
     businessHours: value(`BUSINESS_HOURS_${suffix}`, isEnglish ? "Mon-Sat: 07:00 - 19:00" : "Mo-Sa: 07:00 - 19:00"),
-    serviceArea: value(`SERVICE_AREA_${suffix}`, isEnglish ? "Greater Berlin Area" : "Grossraum Berlin"),
+    serviceArea: value(`SERVICE_AREA_${suffix}`, isEnglish ? "Greater Berlin Area" : "Großraum Berlin"),
     whatsappMessage: value(
       `WHATSAPP_MESSAGE_${suffix}`,
-      isEnglish ? "Hello CleanMaster, I would like a quote for your services." : "Hallo CleanMaster, ich moechte ein Angebot fuer Ihre Services."
+      isEnglish ? "Hello CleanMaster, I would like a quote for your services." : "Hallo CleanMaster, ich möchte ein Angebot für Ihre Services."
     )
   };
 }
@@ -563,17 +528,31 @@ function buildConfig() {
       name: value("COMPANY_NAME", "CleanMaster"),
       phone: value("PHONE_NUMBER", "+49 30 12345678"),
       telLink: sanitizeTel(value("PHONE_NUMBER", "+49 30 12345678")),
-      email: value("EMAIL", "info@cleanmaster.example"),
+      email: value("EMAIL", "info@cleanmasterbw.de"),
       whatsappNumber: sanitizeWhatsapp(value("WHATSAPP_NUMBER", "493012345678")),
       logoUrl: value("LOGO_URL", "/public/logo-placeholder.svg"),
       logoAlt: value("LOGO_ALT", "CleanMaster logo"),
       defaultReviewAvatar: value("DEFAULT_REVIEW_AVATAR", "/public/avatar-placeholder.svg"),
-      addressStreet: value("ADDRESS_STREET", "Musterstrasse 10"),
+      addressStreet: value("ADDRESS_STREET", "Musterstraße 10"),
       addressCity: value("ADDRESS_CITY", "Berlin"),
       addressCountry: value("ADDRESS_COUNTRY", "Germany"),
-      facebookUrl: value("SOCIAL_FACEBOOK_URL", "#"),
-      instagramUrl: value("SOCIAL_INSTAGRAM_URL", "#"),
-      googleUrl: value("SOCIAL_GOOGLE_URL", "#")
+      legalName: value("LEGAL_COMPANY_NAME", value("COMPANY_NAME", "CleanMaster")),
+      legalRepresentative: value("LEGAL_REPRESENTATIVE", ""),
+      legalStreet: value("LEGAL_ADDRESS_STREET", value("ADDRESS_STREET", "Musterstraße 10")),
+      legalPostalCode: value("LEGAL_POSTAL_CODE", ""),
+      legalCity: value("LEGAL_CITY", value("ADDRESS_CITY", "Berlin")),
+      legalCountry: value("LEGAL_COUNTRY", value("ADDRESS_COUNTRY", "Germany")),
+      legalPhone: value("LEGAL_PHONE", value("PHONE_NUMBER", "+49 30 12345678")),
+      legalEmail: value("LEGAL_EMAIL", value("EMAIL", "info@cleanmasterbw.de")),
+      legalVatId: value("LEGAL_VAT_ID", ""),
+      legalCommercialRegister: value("LEGAL_COMMERCIAL_REGISTER", ""),
+      legalSupervisoryAuthority: value("LEGAL_SUPERVISORY_AUTHORITY", ""),
+      legalContentResponsible: value("LEGAL_CONTENT_RESPONSIBLE", ""),
+      legalHostingProvider: value(
+        "LEGAL_HOSTING_PROVIDER",
+        "Netlify, Inc., 44 Montgomery Street, San Francisco, CA 94104, USA"
+      ),
+      legalLastUpdated: value("LEGAL_LAST_UPDATED", new Date().toISOString().slice(0, 10))
     },
     assets: {
       heroBackgroundImage: value("HERO_BG_IMAGE", "/public/hero-cleaning.svg")
@@ -600,7 +579,7 @@ function buildConfig() {
         ogImageAlt: value("SEO_OG_IMAGE_ALT_DE", "CleanMaster Hausservice-Team bei der Arbeit"),
         description: value(
           "SEO_DESCRIPTION_DE",
-          "CleanMaster bietet zuverlaessige Hausservices mit Reinigung, Malerarbeiten, Dekoration, Gartenpflege und Instandhaltung."
+          "CleanMaster bietet zuverlässige Hausservices mit Reinigung, Malerarbeiten, Dekoration, Gartenpflege und Instandhaltung."
         ),
         keywords: value(
           "SEO_KEYWORDS_DE",
@@ -645,10 +624,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
   const alternateLocale = lang === "de" ? (config.seo.en.locale || "en_US") : (config.seo.de.locale || "de_DE");
   const reviewAverage = averageRating(text.reviews);
 
-  const socialProfiles = [config.company.facebookUrl, config.company.instagramUrl, config.company.googleUrl].filter(
-    (url) => url && url !== "#"
-  );
-
   const reviewSchemaEntries = text.reviews.slice(0, 6).map((review) => ({
     "@type": "Review",
     author: {
@@ -671,7 +646,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
     name: config.company.name,
     url: xDefaultUrl,
     logo: absoluteUrl(config.siteUrl, config.company.logoUrl),
-    sameAs: socialProfiles,
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -701,7 +675,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
       addressLocality: config.company.addressCity,
       addressCountry: config.company.addressCountry
     },
-    sameAs: socialProfiles,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: lang === "de" ? "Hausservices" : "Home Services",
@@ -751,7 +724,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
   const initialServiceCards = text.serviceCards
     .map((item, index) => {
       const backgroundSrc = versionedAssetUrl(serviceBackgroundFor(index), assetVersion);
-      const iconSrc = versionedAssetUrl(serviceIconFor(index, item.title), assetVersion);
       const photoSrc = versionedAssetUrl(servicePhotoFor(index, item.title), assetVersion);
       const detailText = text.serviceDetails[index] || item.description;
       return `
@@ -759,7 +731,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
         data-service-title="${escapeHtml(item.title)}"
         data-service-description="${escapeHtml(item.description)}"
         data-service-detail="${escapeHtml(detailText)}"
-        data-service-icon="${escapeHtml(iconSrc)}"
         style="--service-bg:url('${escapeHtml(backgroundSrc)}')">
         <img class="service-card-photo" src="${escapeHtml(photoSrc)}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" width="900" height="600">
         <h3>${escapeHtml(item.title)}</h3>
@@ -813,6 +784,9 @@ function renderPage(config, forcedLang, pagePath = "/") {
       </details>`
     )
     .join("");
+
+  const legalImpressumPath = lang === "de" ? "/impressum/" : "/en/impressum/";
+  const legalPrivacyPath = lang === "de" ? "/datenschutz/" : "/en/datenschutz/";
 
   const pageConfig = { ...config, defaultLanguage: lang };
 
@@ -880,7 +854,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
           <span class="brand-text">${escapeHtml(config.company.name)}</span>
         </a>
         <div class="header-actions">
-          <a class="header-call" href="${escapeHtml(config.company.telLink)}">${escapeHtml(config.company.phone)}</a>
           <div class="language-switch" role="group" aria-label="Language switcher">
             <button class="lang-btn ${lang === "en" ? "active" : ""}" data-lang="en" type="button">EN</button>
             <button class="lang-btn ${lang === "de" ? "active" : ""}" data-lang="de" type="button">DE</button>
@@ -1024,19 +997,10 @@ function renderPage(config, forcedLang, pagePath = "/") {
           <p>${escapeHtml(text.businessHours)}</p>
           <p class="footer-title" id="footer-service-area-label">${escapeHtml(text.footerServiceAreaLabel)}</p>
           <p>${escapeHtml(text.serviceArea)}</p>
-        </div>
-        <div>
-          <p class="footer-title" id="footer-social-label">${escapeHtml(text.footerSocialLabel)}</p>
-          <div class="social-links">
-            <a href="${escapeHtml(config.company.facebookUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <img src="/public/icon-facebook.svg?v=${assetVersion}" alt="Facebook">
-            </a>
-            <a href="${escapeHtml(config.company.instagramUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <img src="/public/icon-instagram.svg?v=${assetVersion}" alt="Instagram">
-            </a>
-            <a href="${escapeHtml(config.company.googleUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Google Business">
-              <img src="/public/icon-google.svg?v=${assetVersion}" alt="Google Business">
-            </a>
+          <p class="footer-title">${escapeHtml(text.footerLegalLabel)}</p>
+          <div class="footer-legal-links">
+            <a href="${escapeHtml(legalImpressumPath)}">${escapeHtml(text.footerImpressumLabel)}</a>
+            <a href="${escapeHtml(legalPrivacyPath)}">${escapeHtml(text.footerPrivacyLabel)}</a>
           </div>
         </div>
       </div>
@@ -1049,7 +1013,6 @@ function renderPage(config, forcedLang, pagePath = "/") {
           <span aria-hidden="true">&times;</span>
           <span id="service-modal-close-text">${escapeHtml(text.serviceModalClose)}</span>
         </button>
-        <img id="service-modal-icon" class="service-modal-icon" src="/public/icon-service-cleaning.svg?v=${assetVersion}" alt="" aria-hidden="true" hidden>
         <p id="service-modal-label" class="service-modal-label">${escapeHtml(text.serviceModalLabel)}</p>
         <h3 id="service-modal-title" class="service-modal-title"></h3>
         <p id="service-modal-description"></p>
@@ -1063,6 +1026,286 @@ function renderPage(config, forcedLang, pagePath = "/") {
 
     <script>window.CLEANMASTER_CONFIG = ${safeJson(pageConfig)};</script>
     <script src="/public/app.js?v=${assetVersion}" defer></script>
+  </body>
+</html>`;
+}
+
+function renderLegalPage(config, forcedLang, pageType = "impressum", pagePath = "/impressum/") {
+  const lang = forcedLang || config.defaultLanguage;
+  const isEnglish = lang === "en";
+  const assetVersion = encodeURIComponent(config.assetVersion || "1");
+  const siteBase = config.siteUrl.replace(/\/$/, "");
+  const logoSrc = versionedAssetUrl(config.company.logoUrl, assetVersion);
+  const normalizedPath = pagePath.endsWith("/") ? pagePath : `${pagePath}/`;
+  const canonical = `${siteBase}${normalizedPath === "//" ? "/" : normalizedPath}`;
+  const enUrl = pageType === "impressum" ? `${siteBase}/en/impressum/` : `${siteBase}/en/datenschutz/`;
+  const deUrl = pageType === "impressum" ? `${siteBase}/impressum/` : `${siteBase}/datenschutz/`;
+  const xDefaultUrl = lang === "de" ? deUrl : enUrl;
+  const homePath = lang === "de" ? "/de/" : "/en/";
+  const impressumPath = lang === "de" ? "/impressum/" : "/en/impressum/";
+  const privacyPath = lang === "de" ? "/datenschutz/" : "/en/datenschutz/";
+  const text = config.content[lang];
+  const seo = config.seo[lang];
+
+  const legalName = config.company.legalName || config.company.name;
+  const legalCityLine = [config.company.legalPostalCode, config.company.legalCity].filter(Boolean).join(" ");
+  const legalAddressParts = [config.company.legalStreet, legalCityLine, config.company.legalCountry].filter(Boolean);
+
+  const legalCopy = isEnglish
+    ? {
+        imprintTitle: "Imprint",
+        privacyTitle: "Privacy Policy",
+        backHome: "Back to Home",
+        legalTitle: "Legal",
+        infoHeader: "Information according to § 5 DDG",
+        representedBy: "Represented by",
+        contact: "Contact",
+        vatId: "VAT identification number according to § 27a UStG",
+        register: "Commercial register",
+        supervisory: "Supervisory authority",
+        contentResponsible: "Responsible for content according to § 18 para. 2 MStV",
+        euDispute: "EU dispute resolution",
+        euDisputeText:
+          "The European Commission provides a platform for online dispute resolution (ODR): https://ec.europa.eu/consumers/odr/.",
+        consumerDispute: "Consumer dispute resolution",
+        consumerDisputeText:
+          "We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.",
+        privacyController: "1. Controller",
+        privacyServerLogs: "2. Access data and server log files",
+        privacyContact: "3. Contact requests",
+        privacyPurpose: "4. Purposes and legal bases",
+        privacyRetention: "5. Storage period",
+        privacyHosting: "6. Hosting",
+        privacyRecipients: "7. Recipients",
+        privacyRights: "8. Your rights",
+        privacyChanges: "9. Changes to this policy",
+        lastUpdated: "Last updated"
+      }
+    : {
+        imprintTitle: "Impressum",
+        privacyTitle: "Datenschutzerklärung",
+        backHome: "Zurück zur Startseite",
+        legalTitle: "Rechtliches",
+        infoHeader: "Angaben gemäß § 5 DDG",
+        representedBy: "Vertreten durch",
+        contact: "Kontakt",
+        vatId: "Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG",
+        register: "Handelsregister",
+        supervisory: "Zuständige Aufsichtsbehörde",
+        contentResponsible: "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
+        euDispute: "EU-Streitschlichtung",
+        euDisputeText:
+          "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: https://ec.europa.eu/consumers/odr/.",
+        consumerDispute: "Verbraucherstreitbeilegung",
+        consumerDisputeText:
+          "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
+        privacyController: "1. Verantwortlicher",
+        privacyServerLogs: "2. Zugriffsdaten und Server-Logfiles",
+        privacyContact: "3. Kontaktanfragen",
+        privacyPurpose: "4. Zwecke und Rechtsgrundlagen",
+        privacyRetention: "5. Speicherdauer",
+        privacyHosting: "6. Hosting",
+        privacyRecipients: "7. Empfänger",
+        privacyRights: "8. Ihre Rechte",
+        privacyChanges: "9. Änderungen dieser Datenschutzerklärung",
+        lastUpdated: "Stand"
+      };
+
+  const pageTitle = pageType === "impressum" ? legalCopy.imprintTitle : legalCopy.privacyTitle;
+  const title = `${config.company.name} | ${pageTitle}`;
+  const description = isEnglish
+    ? `${pageTitle} page for ${config.company.name}.`
+    : `${pageTitle} von ${config.company.name}.`;
+
+  const optionalRepresentative = config.company.legalRepresentative
+    ? `<p><strong>${escapeHtml(legalCopy.representedBy)}:</strong><br>${escapeHtml(config.company.legalRepresentative)}</p>`
+    : "";
+  const optionalVat = config.company.legalVatId
+    ? `<p><strong>${escapeHtml(legalCopy.vatId)}:</strong><br>${escapeHtml(config.company.legalVatId)}</p>`
+    : "";
+  const optionalRegister = config.company.legalCommercialRegister
+    ? `<p><strong>${escapeHtml(legalCopy.register)}:</strong><br>${escapeHtml(config.company.legalCommercialRegister)}</p>`
+    : "";
+  const optionalSupervisory = config.company.legalSupervisoryAuthority
+    ? `<p><strong>${escapeHtml(legalCopy.supervisory)}:</strong><br>${escapeHtml(config.company.legalSupervisoryAuthority)}</p>`
+    : "";
+  const optionalContentResponsible = config.company.legalContentResponsible
+    ? `<p><strong>${escapeHtml(legalCopy.contentResponsible)}:</strong><br>${escapeHtml(config.company.legalContentResponsible)}</p>`
+    : "";
+
+  const legalContent =
+    pageType === "impressum"
+      ? `
+      <article class="legal-card">
+        <h1>${escapeHtml(legalCopy.imprintTitle)}</h1>
+        <h2>${escapeHtml(legalCopy.infoHeader)}</h2>
+        <p><strong>${escapeHtml(legalName)}</strong></p>
+        <p>${legalAddressParts.map((part) => escapeHtml(part)).join("<br>")}</p>
+        ${optionalRepresentative}
+        <p><strong>${escapeHtml(legalCopy.contact)}:</strong><br>
+        <a href="${escapeHtml(config.company.telLink)}">${escapeHtml(config.company.legalPhone)}</a><br>
+        <a href="mailto:${escapeHtml(config.company.legalEmail)}">${escapeHtml(config.company.legalEmail)}</a></p>
+        ${optionalVat}
+        ${optionalRegister}
+        ${optionalSupervisory}
+        ${optionalContentResponsible}
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.euDispute)}</h2>
+        <p>${escapeHtml(legalCopy.euDisputeText)} <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a></p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.consumerDispute)}</h2>
+        <p>${escapeHtml(legalCopy.consumerDisputeText)}</p>
+      </article>`
+      : `
+      <article class="legal-card">
+        <h1>${escapeHtml(legalCopy.privacyTitle)}</h1>
+        <h2>${escapeHtml(legalCopy.privacyController)}</h2>
+        <p><strong>${escapeHtml(legalName)}</strong><br>${legalAddressParts.map((part) => escapeHtml(part)).join("<br>")}</p>
+        <p><a href="${escapeHtml(config.company.telLink)}">${escapeHtml(config.company.legalPhone)}</a><br>
+        <a href="mailto:${escapeHtml(config.company.legalEmail)}">${escapeHtml(config.company.legalEmail)}</a></p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyServerLogs)}</h2>
+        <p>${
+          isEnglish
+            ? "When you access this website, technical information is processed in server log files (e.g. IP address, requested URL, date/time, user agent) to ensure secure operation and error analysis."
+            : "Beim Aufruf dieser Website werden technische Zugriffsdaten in Server-Logfiles verarbeitet (z. B. IP-Adresse, aufgerufene URL, Datum/Uhrzeit, User-Agent), um den sicheren Betrieb und die Fehleranalyse zu gewährleisten."
+        }</p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyContact)}</h2>
+        <p>${
+          isEnglish
+            ? "If you contact us via form, phone, email, or WhatsApp, we process the data you provide to handle your request and follow-up communication."
+            : "Wenn Sie uns per Formular, Telefon, E-Mail oder WhatsApp kontaktieren, verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage und für Rückfragen."
+        }</p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyPurpose)}</h2>
+        <ul class="legal-list">
+          <li>${
+            isEnglish
+              ? "Art. 6 para. 1 lit. b GDPR (pre-contractual measures and contract fulfillment)"
+              : "Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen und Vertragserfüllung)"
+          }</li>
+          <li>${
+            isEnglish
+              ? "Art. 6 para. 1 lit. f GDPR (legitimate interests: secure website operation, communication)"
+              : "Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse: sicherer Betrieb, Kommunikation)"
+          }</li>
+          <li>${
+            isEnglish
+              ? "Art. 6 para. 1 lit. a GDPR where consent is required"
+              : "Art. 6 Abs. 1 lit. a DSGVO, soweit eine Einwilligung erforderlich ist"
+          }</li>
+        </ul>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyRetention)}</h2>
+        <p>${
+          isEnglish
+            ? "We store personal data only as long as required for the stated purposes or statutory retention obligations."
+            : "Wir speichern personenbezogene Daten nur so lange, wie es für die genannten Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen."
+        }</p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyHosting)}</h2>
+        <p>${escapeHtml(config.company.legalHostingProvider)}</p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyRecipients)}</h2>
+        <p>${
+          isEnglish
+            ? "Data may be shared with technical service providers only where this is necessary for website operation, communication, or legal obligations."
+            : "Daten werden nur soweit erforderlich an technische Dienstleister weitergegeben, wenn dies für den Website-Betrieb, die Kommunikation oder gesetzliche Pflichten notwendig ist."
+        }</p>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyRights)}</h2>
+        <ul class="legal-list">
+          <li>${isEnglish ? "Right of access (Art. 15 GDPR)" : "Recht auf Auskunft (Art. 15 DSGVO)"}</li>
+          <li>${isEnglish ? "Right to rectification (Art. 16 GDPR)" : "Recht auf Berichtigung (Art. 16 DSGVO)"}</li>
+          <li>${isEnglish ? "Right to erasure (Art. 17 GDPR)" : "Recht auf Löschung (Art. 17 DSGVO)"}</li>
+          <li>${isEnglish ? "Right to restriction (Art. 18 GDPR)" : "Recht auf Einschränkung (Art. 18 DSGVO)"}</li>
+          <li>${isEnglish ? "Right to data portability (Art. 20 GDPR)" : "Recht auf Datenübertragbarkeit (Art. 20 DSGVO)"}</li>
+          <li>${isEnglish ? "Right to object (Art. 21 GDPR)" : "Widerspruchsrecht (Art. 21 DSGVO)"}</li>
+          <li>${
+            isEnglish
+              ? "Right to lodge a complaint with a supervisory authority (Art. 77 GDPR)"
+              : "Beschwerderecht bei einer Aufsichtsbehörde (Art. 77 DSGVO)"
+          }</li>
+        </ul>
+      </article>
+      <article class="legal-card">
+        <h2>${escapeHtml(legalCopy.privacyChanges)}</h2>
+        <p>${escapeHtml(legalCopy.lastUpdated)}: ${escapeHtml(config.company.legalLastUpdated)}</p>
+      </article>`;
+
+  return `<!doctype html>
+<html lang="${lang}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}">
+    <meta name="author" content="${escapeHtml(config.seo.author)}">
+    <meta name="robots" content="${escapeHtml(config.seo.robots)}">
+    <link rel="canonical" href="${escapeHtml(canonical)}">
+    <link rel="alternate" hreflang="de" href="${escapeHtml(deUrl)}">
+    <link rel="alternate" hreflang="en" href="${escapeHtml(enUrl)}">
+    <link rel="alternate" hreflang="x-default" href="${escapeHtml(xDefaultUrl)}">
+    <link rel="icon" href="${escapeHtml(logoSrc)}">
+    <meta property="og:title" content="${escapeHtml(title)}">
+    <meta property="og:description" content="${escapeHtml(description)}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${escapeHtml(canonical)}">
+    <meta property="og:image" content="${escapeHtml(absoluteUrl(config.siteUrl, config.seo.ogImage || config.assets.heroBackgroundImage))}">
+    <meta name="twitter:card" content="${escapeHtml(config.seo.twitterCard)}">
+    <meta name="twitter:title" content="${escapeHtml(title)}">
+    <meta name="twitter:description" content="${escapeHtml(description)}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/index.css?v=${assetVersion}">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="${escapeHtml(homePath)}" aria-label="${escapeHtml(config.company.name)} home">
+          <img class="brand-logo" src="${escapeHtml(logoSrc)}" alt="${escapeHtml(config.company.logoAlt)}" loading="eager">
+          <span class="brand-text">${escapeHtml(config.company.name)}</span>
+        </a>
+      </div>
+    </header>
+    <main class="section container legal-main">
+      <div class="legal-nav">
+        <a href="${escapeHtml(homePath)}">${escapeHtml(legalCopy.backHome)}</a>
+        <a href="${escapeHtml(impressumPath)}">${escapeHtml(legalCopy.imprintTitle)}</a>
+        <a href="${escapeHtml(privacyPath)}">${escapeHtml(legalCopy.privacyTitle)}</a>
+      </div>
+      ${legalContent}
+    </main>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <p class="footer-brand">${escapeHtml(config.company.name)}</p>
+          <p>${escapeHtml(text.footerTagline)}</p>
+        </div>
+        <div>
+          <p class="footer-title">${escapeHtml(text.footerContactLabel)}</p>
+          <a href="${escapeHtml(config.company.telLink)}">${escapeHtml(config.company.phone)}</a>
+          <a href="mailto:${escapeHtml(config.company.email)}">${escapeHtml(config.company.email)}</a>
+          <address>${escapeHtml(config.company.addressStreet)}, ${escapeHtml(config.company.addressCity)}, ${escapeHtml(config.company.addressCountry)}</address>
+        </div>
+        <div>
+          <p class="footer-title">${escapeHtml(legalCopy.legalTitle)}</p>
+          <a href="${escapeHtml(impressumPath)}">${escapeHtml(legalCopy.imprintTitle)}</a>
+          <a href="${escapeHtml(privacyPath)}">${escapeHtml(legalCopy.privacyTitle)}</a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>`;
 }
@@ -1099,6 +1342,30 @@ function renderSitemapXml() {
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
+  <url>
+    <loc>${escapeHtml(siteUrl)}/impressum/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${escapeHtml(siteUrl)}/datenschutz/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${escapeHtml(siteUrl)}/en/impressum/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${escapeHtml(siteUrl)}/en/datenschutz/</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>`;
 }
 
@@ -1130,6 +1397,26 @@ app.get(["/de", "/de/"], (_req, res) => {
   res.status(200).type("html").send(renderPage(config, "de", "/de/"));
 });
 
+app.get(["/impressum", "/impressum/"], (_req, res) => {
+  const config = buildConfig();
+  res.status(200).type("html").send(renderLegalPage(config, "de", "impressum", "/impressum/"));
+});
+
+app.get(["/datenschutz", "/datenschutz/"], (_req, res) => {
+  const config = buildConfig();
+  res.status(200).type("html").send(renderLegalPage(config, "de", "datenschutz", "/datenschutz/"));
+});
+
+app.get(["/en/impressum", "/en/impressum/"], (_req, res) => {
+  const config = buildConfig();
+  res.status(200).type("html").send(renderLegalPage(config, "en", "impressum", "/en/impressum/"));
+});
+
+app.get(["/en/datenschutz", "/en/datenschutz/"], (_req, res) => {
+  const config = buildConfig();
+  res.status(200).type("html").send(renderLegalPage(config, "en", "datenschutz", "/en/datenschutz/"));
+});
+
 app.get("/robots.txt", (_req, res) => {
   res.type("text/plain").send(renderRobotsTxt());
 });
@@ -1149,6 +1436,7 @@ module.exports = {
   app,
   buildConfig,
   renderPage,
+  renderLegalPage,
   renderRobotsTxt,
   renderSitemapXml
 };

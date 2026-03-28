@@ -18,7 +18,6 @@
     servicesGrid: document.getElementById("services-grid"),
     serviceModal: document.getElementById("service-modal"),
     serviceModalBackdrop: document.getElementById("service-modal-backdrop"),
-    serviceModalIcon: document.getElementById("service-modal-icon"),
     serviceModalTitle: document.getElementById("service-modal-title"),
     serviceModalDescription: document.getElementById("service-modal-description"),
     serviceModalLabel: document.getElementById("service-modal-label"),
@@ -64,7 +63,6 @@
     footerContactLabel: document.getElementById("footer-contact-label"),
     footerHoursLabel: document.getElementById("footer-hours-label"),
     footerServiceAreaLabel: document.getElementById("footer-service-area-label"),
-    footerSocialLabel: document.getElementById("footer-social-label"),
     whatsappFloat: document.getElementById("whatsapp-float")
   };
 
@@ -76,14 +74,6 @@
     twTitle: document.getElementById("twitter-title"),
     twDescription: document.getElementById("twitter-description")
   };
-
-  const serviceIconFallbacks = [
-    "/public/icon-service-cleaning.svg",
-    "/public/icon-service-painting.svg",
-    "/public/icon-service-decor.svg",
-    "/public/icon-service-gardening.svg",
-    "/public/icon-service-maintenance.svg"
-  ];
 
   const serviceBackgroundPaths = [
     "/public/service-bg-cleaning.svg",
@@ -107,37 +97,6 @@
   let reviewAutoplayTimer = null;
   let lastFocusedServiceCard = null;
   const reviewAutoplayDelayMs = 4500;
-
-  function serviceIconFor(index, title) {
-    const normalized = String(title || "").toLowerCase();
-    if (normalized.includes("paint") || normalized.includes("maler")) {
-      return versionedAsset("/public/icon-service-painting.svg");
-    }
-    if (
-      normalized.includes("decor") ||
-      normalized.includes("dekor") ||
-      normalized.includes("styling") ||
-      normalized.includes("design")
-    ) {
-      return versionedAsset("/public/icon-service-decor.svg");
-    }
-    if (normalized.includes("garden") || normalized.includes("garten")) {
-      return versionedAsset("/public/icon-service-gardening.svg");
-    }
-    if (
-      normalized.includes("maintenance") ||
-      normalized.includes("objekt") ||
-      normalized.includes("instand") ||
-      normalized.includes("repair")
-    ) {
-      return versionedAsset("/public/icon-service-maintenance.svg");
-    }
-    if (normalized.includes("clean") || normalized.includes("reinig")) {
-      return versionedAsset("/public/icon-service-cleaning.svg");
-    }
-    const iconPath = serviceIconFallbacks[index % serviceIconFallbacks.length];
-    return versionedAsset(iconPath);
-  }
 
   function versionedAsset(path) {
     const version = encodeURIComponent(config.assetVersion || "1");
@@ -232,7 +191,6 @@
       card.dataset.serviceTitle = cardData.title;
       card.dataset.serviceDescription = cardData.description;
       card.dataset.serviceDetail = details[index] || cardData.description;
-      card.dataset.serviceIcon = serviceIconFor(index, cardData.title);
       card.style.setProperty("--service-bg", `url("${serviceBackgroundFor(index)}")`);
 
       const photo = document.createElement("img");
@@ -257,15 +215,11 @@
     });
   }
 
-  function openServiceModal(title, description, iconSrc, triggerElement) {
+  function openServiceModal(title, description, triggerElement) {
     if (!elements.serviceModal || !elements.serviceModalTitle || !elements.serviceModalDescription) {
       return;
     }
     lastFocusedServiceCard = triggerElement instanceof HTMLElement ? triggerElement : null;
-    if (elements.serviceModalIcon) {
-      elements.serviceModalIcon.src = iconSrc || "";
-      elements.serviceModalIcon.hidden = !iconSrc;
-    }
     elements.serviceModalTitle.textContent = title;
     elements.serviceModalDescription.textContent = description;
     elements.serviceModal.hidden = false;
@@ -304,8 +258,7 @@
       }
       const title = card.dataset.serviceTitle || card.querySelector("h3")?.textContent || "";
       const description = card.dataset.serviceDetail || card.dataset.serviceDescription || card.querySelector("p")?.textContent || "";
-      const iconSrc = card.dataset.serviceIcon || "";
-      openServiceModal(title, description, iconSrc, card);
+      openServiceModal(title, description, card);
     });
 
     if (elements.serviceModalCloseBtn) {
@@ -615,7 +568,6 @@
     elements.footerContactLabel.textContent = content.footerContactLabel;
     elements.footerHoursLabel.textContent = content.footerHoursLabel;
     elements.footerServiceAreaLabel.textContent = content.footerServiceAreaLabel;
-    elements.footerSocialLabel.textContent = content.footerSocialLabel;
 
     elements.whatsappFloat.href = buildWhatsappLink(lang);
 
