@@ -1,8 +1,10 @@
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const dotenv = require("dotenv");
 
-dotenv.config();
+// Force local builds to use project .env values even if shell vars are present.
+dotenv.config({ path: path.join(__dirname, ".env"), override: true });
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -309,6 +311,61 @@ function versionedAssetUrl(url, version) {
   return `${url}${url.includes("?") ? "&" : "?"}v=${version}`;
 }
 
+function mimeTypeForFile(filePath) {
+  const extension = path.extname(filePath).toLowerCase();
+  if (extension === ".svg") {
+    return "image/svg+xml";
+  }
+  if (extension === ".png") {
+    return "image/png";
+  }
+  if (extension === ".jpg" || extension === ".jpeg") {
+    return "image/jpeg";
+  }
+  if (extension === ".webp") {
+    return "image/webp";
+  }
+  if (extension === ".gif") {
+    return "image/gif";
+  }
+  if (extension === ".ico") {
+    return "image/x-icon";
+  }
+  return "";
+}
+
+function embeddedAssetDataUrl(assetUrl) {
+  if (!assetUrl) {
+    return "";
+  }
+  if (assetUrl.startsWith("data:") || assetUrl.startsWith("http://") || assetUrl.startsWith("https://")) {
+    return assetUrl;
+  }
+
+  const sanitizedPath = assetUrl.split("?")[0].split("#")[0];
+  if (!sanitizedPath.startsWith("/")) {
+    return "";
+  }
+
+  const relativePath = sanitizedPath.replace(/^\/+/, "");
+  const filePath = path.resolve(__dirname, relativePath);
+  const repoRoot = path.resolve(__dirname);
+  if (!filePath.startsWith(repoRoot + path.sep) && filePath !== repoRoot) {
+    return "";
+  }
+  if (!fs.existsSync(filePath)) {
+    return "";
+  }
+
+  const mimeType = mimeTypeForFile(filePath);
+  if (!mimeType) {
+    return "";
+  }
+
+  const fileBuffer = fs.readFileSync(filePath);
+  return `data:${mimeType};base64,${fileBuffer.toString("base64")}`;
+}
+
 function absoluteUrl(siteUrl, maybeRelativeUrl) {
   if (!maybeRelativeUrl) {
     return "";
@@ -610,7 +667,7 @@ function renderPage(config, forcedLang, pagePath = "/") {
   const seo = config.seo[lang];
   const assetVersion = encodeURIComponent(config.assetVersion || "1");
   const siteBase = config.siteUrl.replace(/\/$/, "");
-  const logoSrc = versionedAssetUrl(config.company.logoUrl, assetVersion);
+  const logoSrc = embeddedAssetDataUrl(config.company.logoUrl) || versionedAssetUrl(config.company.logoUrl, assetVersion);
   const heroBgSrc = versionedAssetUrl(config.assets.heroBackgroundImage, assetVersion);
   const normalizedPath = pagePath.endsWith("/") ? pagePath : `${pagePath}/`;
   const canonical = `${siteBase}${normalizedPath === "//" ? "/" : normalizedPath}`;
@@ -1035,7 +1092,7 @@ function renderLegalPage(config, forcedLang, pageType = "impressum", pagePath = 
   const isEnglish = lang === "en";
   const assetVersion = encodeURIComponent(config.assetVersion || "1");
   const siteBase = config.siteUrl.replace(/\/$/, "");
-  const logoSrc = versionedAssetUrl(config.company.logoUrl, assetVersion);
+  const logoSrc = embeddedAssetDataUrl(config.company.logoUrl) || versionedAssetUrl(config.company.logoUrl, assetVersion);
   const normalizedPath = pagePath.endsWith("/") ? pagePath : `${pagePath}/`;
   const canonical = `${siteBase}${normalizedPath === "//" ? "/" : normalizedPath}`;
   const enUrl = pageType === "impressum" ? `${siteBase}/en/impressum/` : `${siteBase}/en/datenschutz/`;
